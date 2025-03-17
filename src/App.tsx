@@ -4,11 +4,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AdminLayout from "./components/layout/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import AccountRequests from "./pages/admin/AccountRequests";
+import EcommerceLayout from "./components/layout/EcommerceLayout";
+import HomePage from "./pages/ecommerce/HomePage";
+import ProductsPage from "./pages/ecommerce/ProductsPage";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +21,11 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          {/* E-commerce Routes */}
+          <Route path="/" element={<EcommerceLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="products" element={<ProductsPage />} />
+          </Route>
           
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>
