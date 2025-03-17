@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -11,6 +11,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   Table, 
   TableBody, 
@@ -19,7 +26,7 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
-import { Plus, Edit, Trash, Tag } from 'lucide-react';
+import { Plus, Edit, Trash, Tag, Upload, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Item {
@@ -29,10 +36,23 @@ interface Item {
   price: number;
   stock: number;
   image: string;
+  category: string;
 }
+
+const categories = [
+  "Electronics",
+  "Clothing",
+  "Home & Kitchen",
+  "Books",
+  "Toys & Games",
+  "Beauty & Personal Care",
+  "Sports & Outdoors",
+  "Other"
+];
 
 const InventoryManagement: React.FC = () => {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [items, setItems] = useState<Item[]>([
     {
       id: '1',
@@ -40,7 +60,8 @@ const InventoryManagement: React.FC = () => {
       description: 'This is a sample product',
       price: 19.99,
       stock: 50,
-      image: '/placeholder.svg'
+      image: '/placeholder.svg',
+      category: 'Electronics'
     },
     {
       id: '2',
@@ -48,7 +69,8 @@ const InventoryManagement: React.FC = () => {
       description: 'Another sample product',
       price: 29.99,
       stock: 30,
-      image: '/placeholder.svg'
+      image: '/placeholder.svg',
+      category: 'Clothing'
     }
   ]);
   
@@ -57,8 +79,11 @@ const InventoryManagement: React.FC = () => {
     description: '',
     price: '',
     stock: '',
-    image: ''
+    image: '',
+    category: ''
   });
+  
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -67,16 +92,59 @@ const InventoryManagement: React.FC = () => {
       [name]: value
     });
   };
+  
+  const handleCategoryChange = (value: string) => {
+    setFormData({
+      ...formData,
+      category: value
+    });
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Create a preview URL for the image
+      const imageUrl = URL.createObjectURL(file);
+      setPreviewImage(imageUrl);
+      
+      // In a real app, you would upload this to a server and get back a URL
+      // For now, we'll just use the local preview URL
+      setFormData({
+        ...formData,
+        image: imageUrl
+      });
+      
+      toast({
+        title: "Image Uploaded",
+        description: `${file.name} has been selected.`,
+      });
+    }
+  };
+  
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.category) {
+      toast({
+        title: "Error",
+        description: "Please select a category for the item.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     const newItem: Item = {
       id: Date.now().toString(),
       name: formData.name,
       description: formData.description,
       price: parseFloat(formData.price),
       stock: parseInt(formData.stock),
-      image: formData.image || '/placeholder.svg'
+      image: formData.image || '/placeholder.svg',
+      category: formData.category
     };
     
     setItems([...items, newItem]);
@@ -85,8 +153,10 @@ const InventoryManagement: React.FC = () => {
       description: '',
       price: '',
       stock: '',
-      image: ''
+      image: '',
+      category: ''
     });
+    setPreviewImage(null);
     
     toast({
       title: "Item Added",
@@ -132,6 +202,26 @@ const InventoryManagement: React.FC = () => {
               </div>
               
               <div className="space-y-2">
+                <Label htmlFor="category">Category</Label>
+                <Select 
+                  value={formData.category} 
+                  onValueChange={handleCategoryChange}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
@@ -172,14 +262,37 @@ const InventoryManagement: React.FC = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="image">Image URL</Label>
-                <Input
-                  id="image"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  placeholder="/placeholder.svg"
-                />
+                <Label htmlFor="image">Product Image</Label>
+                <div className="flex flex-col items-center space-y-4">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    id="image-upload"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={triggerFileInput}
+                    className="w-full"
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Image
+                  </Button>
+                  
+                  {previewImage && (
+                    <div className="mt-4 border rounded-md overflow-hidden w-full max-w-[200px] h-[150px] relative">
+                      <img 
+                        src={previewImage} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
               
               <Button type="submit" className="w-full">
@@ -201,6 +314,7 @@ const InventoryManagement: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Product</TableHead>
+                    <TableHead>Category</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead>Stock</TableHead>
                     <TableHead>Actions</TableHead>
@@ -209,7 +323,17 @@ const InventoryManagement: React.FC = () => {
                 <TableBody>
                   {items.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell>{item.name}</TableCell>
+                      <TableCell className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded overflow-hidden bg-gray-100 flex-shrink-0">
+                          <img 
+                            src={item.image} 
+                            alt={item.name} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span>{item.name}</span>
+                      </TableCell>
+                      <TableCell>{item.category}</TableCell>
                       <TableCell>${item.price.toFixed(2)}</TableCell>
                       <TableCell>{item.stock}</TableCell>
                       <TableCell>
