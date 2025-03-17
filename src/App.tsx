@@ -11,6 +11,11 @@ import AccountRequests from "./pages/admin/AccountRequests";
 import EcommerceLayout from "./components/layout/EcommerceLayout";
 import HomePage from "./pages/ecommerce/HomePage";
 import ProductsPage from "./pages/ecommerce/ProductsPage";
+import ManagerLayout from "./components/layout/ManagerLayout";
+import InventoryManagement from "./pages/manager/InventoryManagement";
+import PriceManagement from "./pages/manager/PriceManagement";
+import Reports from "./pages/manager/Reports";
+import Transactions from "./pages/manager/Transactions";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +30,16 @@ const App = () => (
           <Route path="/" element={<EcommerceLayout />}>
             <Route index element={<HomePage />} />
             <Route path="products" element={<ProductsPage />} />
+          </Route>
+          
+          {/* Manager Routes */}
+          <Route path="/manager" element={<ManagerLayout />}>
+            <Route index element={<InventoryManagement />} />
+            <Route path="inventory" element={<InventoryManagement />} />
+            <Route path="pricing" element={<PriceManagement />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="transactions" element={<Transactions />} />
+            <Route path="*" element={<Navigate to="/manager" replace />} />
           </Route>
           
           {/* Admin Routes */}
