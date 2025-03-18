@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
-import { Tag, ShoppingBag, Laptop, Watch, ChevronRight, Home as HomeIcon, Shirt, Headphones, Camera, GameController } from 'lucide-react';
+import { Tag, ShoppingBag, Laptop, Watch, ChevronRight, Home as HomeIcon, Shirt, Headphones, Camera, Gamepad } from 'lucide-react';
 
 const categories = [
   {
@@ -63,7 +63,7 @@ const categories = [
     id: 'gaming',
     name: 'Gaming',
     description: 'Video games, consoles, and gaming accessories',
-    icon: GameController,
+    icon: Gamepad,
     productCount: 21,
     image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf',
     featured: false
