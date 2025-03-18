@@ -11,11 +11,15 @@ import AccountRequests from "./pages/admin/AccountRequests";
 import EcommerceLayout from "./components/layout/EcommerceLayout";
 import HomePage from "./pages/ecommerce/HomePage";
 import ProductsPage from "./pages/ecommerce/ProductsPage";
+import AboutPage from "./pages/ecommerce/AboutPage";
+import ContactPage from "./pages/ecommerce/ContactPage";
 import ManagerLayout from "./components/layout/ManagerLayout";
 import InventoryManagement from "./pages/manager/InventoryManagement";
 import PriceManagement from "./pages/manager/PriceManagement";
 import Reports from "./pages/manager/Reports";
 import Transactions from "./pages/manager/Transactions";
+import LoginPage from "./pages/auth/LoginPage";
+import SignupPage from "./pages/auth/SignupPage";
 
 const queryClient = new QueryClient();
 
@@ -26,10 +30,16 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Authentication Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          
           {/* E-commerce Routes */}
           <Route path="/" element={<EcommerceLayout />}>
             <Route index element={<HomePage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="contact" element={<ContactPage />} />
           </Route>
           
           {/* Manager Routes */}

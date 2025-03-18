@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Home, ShoppingBag, Tag, Heart, ChevronLeft, ChevronRight, User, Settings } from 'lucide-react';
+import { Home, ShoppingBag, Tag, Heart, ChevronLeft, ChevronRight, User, Settings, Info, Mail } from 'lucide-react';
 
 interface EcommerceSidebarProps {
   className?: string;
@@ -46,7 +46,8 @@ const EcommerceSidebar: React.FC<EcommerceSidebarProps> = ({ className }) => {
             { path: "/products", icon: ShoppingBag, label: "Products" },
             { path: "/categories", icon: Tag, label: "Categories" },
             { path: "/wishlist", icon: Heart, label: "Wishlist" },
-            { path: "/account", icon: User, label: "My Account" },
+            { path: "/about", icon: Info, label: "About Us" },
+            { path: "/contact", icon: Mail, label: "Contact Us" },
           ].map((item) => (
             <li key={item.path}>
               <NavLink 
@@ -69,7 +70,7 @@ const EcommerceSidebar: React.FC<EcommerceSidebarProps> = ({ className }) => {
         <div className="mt-auto">
           <div className="border-t border-gray-200 pt-4 mt-4 px-2">
             <NavLink 
-              to="/admin"
+              to="/login"
               className={({ isActive }) => cn(
                 "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
                 collapsed ? "justify-center" : "",
@@ -78,8 +79,8 @@ const EcommerceSidebar: React.FC<EcommerceSidebarProps> = ({ className }) => {
                   : "text-gray-600 hover:bg-gray-100"
               )}
             >
-              <Settings className={cn("h-5 w-5", collapsed ? "" : "min-w-5")} />
-              {!collapsed && <span className="truncate">Admin Portal</span>}
+              <User className={cn("h-5 w-5", collapsed ? "" : "min-w-5")} />
+              {!collapsed && <span className="truncate">Login / Sign Up</span>}
             </NavLink>
           </div>
         </div>
