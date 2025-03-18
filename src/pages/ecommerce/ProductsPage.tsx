@@ -118,6 +118,97 @@ const allProducts = [
     category: 'Wearables',
     brand: 'FitLife'
   },
+  {
+    id: 9,
+    name: 'Digital Camera',
+    price: 699.99,
+    image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32',
+    rating: 4.7,
+    ratingCount: 142,
+    onSale: false,
+    category: 'Cameras',
+    brand: 'PhotoMaster'
+  },
+  {
+    id: 10,
+    name: 'Gaming Console',
+    price: 499.99,
+    image: 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3',
+    rating: 4.9,
+    ratingCount: 315,
+    onSale: false,
+    category: 'Gaming',
+    brand: 'GameTech'
+  },
+  {
+    id: 11,
+    name: 'Bluetooth Speaker',
+    price: 79.99,
+    image: 'https://images.unsplash.com/photo-1589003077984-894e133dabab',
+    rating: 4.5,
+    ratingCount: 213,
+    onSale: true,
+    salePrice: 59.99,
+    category: 'Audio',
+    brand: 'SoundBeats'
+  },
+  {
+    id: 12,
+    name: 'Standing Desk',
+    price: 349.99,
+    image: 'https://images.unsplash.com/photo-1593642634443-44adaa06623a',
+    rating: 4.6,
+    ratingCount: 98,
+    onSale: false,
+    category: 'Furniture',
+    brand: 'ErgoWorks'
+  },
+  {
+    id: 13,
+    name: 'Designer Watch',
+    price: 199.99,
+    image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d',
+    rating: 4.8,
+    ratingCount: 167,
+    onSale: true,
+    salePrice: 149.99,
+    category: 'Wearables',
+    brand: 'TimeMaster'
+  },
+  {
+    id: 14,
+    name: 'Graphic T-Shirt',
+    price: 24.99,
+    image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27',
+    rating: 4.3,
+    ratingCount: 219,
+    onSale: false,
+    category: 'Clothing',
+    brand: 'UrbanStyle'
+  },
+  {
+    id: 15,
+    name: 'Smart Blender',
+    price: 129.99,
+    image: 'https://images.unsplash.com/photo-1525373612132-b3e820b87cea',
+    rating: 4.4,
+    ratingCount: 87,
+    onSale: true,
+    salePrice: 99.99,
+    category: 'Kitchen',
+    brand: 'HomeChef'
+  },
+  {
+    id: 16,
+    name: 'Wireless Earbuds',
+    price: 129.99,
+    image: 'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46',
+    rating: 4.7,
+    ratingCount: 341,
+    onSale: false,
+    category: 'Audio',
+    brand: 'SoundBeats'
+  }
 ];
 
 const ProductsPage: React.FC = () => {
@@ -139,26 +230,36 @@ const ProductsPage: React.FC = () => {
   
   useEffect(() => {
     const search = searchParams.get('search');
+    const category = searchParams.get('category');
+    
+    let filteredProducts = [...allProducts];
+    
     if (search) {
       setSearchQuery(search);
-      filterProductsBySearch(search);
-    } else {
-      setProducts(allProducts);
+      const lowercaseQuery = search.toLowerCase();
+      filteredProducts = filteredProducts.filter(product => 
+        product.name.toLowerCase().includes(lowercaseQuery) || 
+        product.category.toLowerCase().includes(lowercaseQuery) || 
+        product.brand.toLowerCase().includes(lowercaseQuery)
+      );
     }
+    
+    if (category) {
+      const updatedFilters = { ...filters };
+      const categoryName = categories.find(c => c.toLowerCase() === category.toLowerCase());
+      
+      if (categoryName && !filters.categories.includes(categoryName)) {
+        updatedFilters.categories = [categoryName];
+        setFilters(updatedFilters);
+        
+        filteredProducts = filteredProducts.filter(p => 
+          p.category.toLowerCase() === category.toLowerCase()
+        );
+      }
+    }
+    
+    setProducts(filteredProducts);
   }, [searchParams]);
-  
-  const filterProductsBySearch = (query: string) => {
-    if (!query.trim()) return allProducts;
-    
-    const lowercaseQuery = query.toLowerCase();
-    const filtered = allProducts.filter(product => 
-      product.name.toLowerCase().includes(lowercaseQuery) || 
-      product.category.toLowerCase().includes(lowercaseQuery) || 
-      product.brand.toLowerCase().includes(lowercaseQuery)
-    );
-    
-    setProducts(filtered);
-  };
   
   const toggleFilter = (type: 'categories' | 'brands', value: string) => {
     setFilters(prev => {
@@ -193,19 +294,16 @@ const ProductsPage: React.FC = () => {
   };
   
   const applyFilters = () => {
-    let filtered = searchQuery ? [...products] : [...allProducts];
+    let filtered = [...allProducts];
     
-    // Filter by categories
     if (filters.categories.length > 0) {
       filtered = filtered.filter(p => filters.categories.includes(p.category));
     }
     
-    // Filter by brands
     if (filters.brands.length > 0) {
       filtered = filtered.filter(p => filters.brands.includes(p.brand));
     }
     
-    // Filter by price range
     if (priceRange.min && priceRange.max) {
       const min = parseFloat(priceRange.min);
       const max = parseFloat(priceRange.max);
@@ -234,7 +332,15 @@ const ProductsPage: React.FC = () => {
       }
     }
     
-    // Filter by sale status
+    if (searchQuery) {
+      const lowercaseQuery = searchQuery.toLowerCase();
+      filtered = filtered.filter(product => 
+        product.name.toLowerCase().includes(lowercaseQuery) || 
+        product.category.toLowerCase().includes(lowercaseQuery) || 
+        product.brand.toLowerCase().includes(lowercaseQuery)
+      );
+    }
+    
     if (filters.onSale) {
       filtered = filtered.filter(p => p.onSale);
     }
@@ -251,7 +357,13 @@ const ProductsPage: React.FC = () => {
     setPriceRange({ min: '', max: '' });
     
     if (searchQuery) {
-      filterProductsBySearch(searchQuery);
+      const lowercaseQuery = searchQuery.toLowerCase();
+      const filtered = allProducts.filter(product => 
+        product.name.toLowerCase().includes(lowercaseQuery) || 
+        product.category.toLowerCase().includes(lowercaseQuery) || 
+        product.brand.toLowerCase().includes(lowercaseQuery)
+      );
+      setProducts(filtered);
     } else {
       setProducts(allProducts);
     }

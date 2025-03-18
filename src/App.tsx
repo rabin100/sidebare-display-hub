@@ -11,6 +11,7 @@ import AccountRequests from "./pages/admin/AccountRequests";
 import EcommerceLayout from "./components/layout/EcommerceLayout";
 import HomePage from "./pages/ecommerce/HomePage";
 import ProductsPage from "./pages/ecommerce/ProductsPage";
+import CategoriesPage from "./pages/ecommerce/CategoriesPage";
 import AboutPage from "./pages/ecommerce/AboutPage";
 import ContactPage from "./pages/ecommerce/ContactPage";
 import WishlistPage from "./pages/ecommerce/WishlistPage";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/" element={<EcommerceLayout />}>
             <Route index element={<HomePage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="categories" element={<CategoriesPage />} />
             <Route path="wishlist" element={<WishlistPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />

@@ -17,9 +17,8 @@ const EcommerceSidebar: React.FC<EcommerceSidebarProps> = ({ className }) => {
 
   return (
     <aside className={cn(
-      "bg-white border-r border-gray-200 h-screen transition-all duration-300 ease-in-out",
+      "bg-white border-r border-gray-200 min-h-screen transition-all duration-300 ease-in-out flex flex-col sticky top-0",
       collapsed ? "w-[70px]" : "w-[240px]",
-      "flex flex-col",
       className
     )}>
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
