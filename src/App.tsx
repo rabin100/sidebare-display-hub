@@ -13,6 +13,7 @@ import HomePage from "./pages/ecommerce/HomePage";
 import ProductsPage from "./pages/ecommerce/ProductsPage";
 import AboutPage from "./pages/ecommerce/AboutPage";
 import ContactPage from "./pages/ecommerce/ContactPage";
+import WishlistPage from "./pages/ecommerce/WishlistPage";
 import ManagerLayout from "./components/layout/ManagerLayout";
 import InventoryManagement from "./pages/manager/InventoryManagement";
 import PriceManagement from "./pages/manager/PriceManagement";
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/" element={<EcommerceLayout />}>
             <Route index element={<HomePage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="wishlist" element={<WishlistPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />
           </Route>
