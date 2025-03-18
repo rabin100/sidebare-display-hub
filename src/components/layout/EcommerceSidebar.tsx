@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Home, ShoppingBag, Tag, Heart, ChevronLeft, ChevronRight, User, Settings, Info, Mail } from 'lucide-react';
+import { Home, ShoppingBag, Tag, Heart, ChevronLeft, ChevronRight, Info, Mail } from 'lucide-react';
 
 interface EcommerceSidebarProps {
   className?: string;
@@ -66,24 +66,6 @@ const EcommerceSidebar: React.FC<EcommerceSidebarProps> = ({ className }) => {
             </li>
           ))}
         </ul>
-        
-        <div className="mt-auto">
-          <div className="border-t border-gray-200 pt-4 mt-4 px-2">
-            <NavLink 
-              to="/login"
-              className={({ isActive }) => cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
-                collapsed ? "justify-center" : "",
-                isActive 
-                  ? "bg-blue-50 text-blue-500 font-medium" 
-                  : "text-gray-600 hover:bg-gray-100"
-              )}
-            >
-              <User className={cn("h-5 w-5", collapsed ? "" : "min-w-5")} />
-              {!collapsed && <span className="truncate">Login / Sign Up</span>}
-            </NavLink>
-          </div>
-        </div>
       </nav>
     </aside>
   );

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Bell, Search, ShoppingCart, User, LogIn, UserPlus, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { 
   DropdownMenu, 
@@ -20,6 +20,7 @@ interface EcommerceHeaderProps {
 const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

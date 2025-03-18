@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -24,6 +23,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
+import { useSearchParams } from 'react-router-dom';
 
 const allProducts = [
   {
@@ -122,9 +122,11 @@ const allProducts = [
 
 const ProductsPage: React.FC = () => {
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [products, setProducts] = useState(allProducts);
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState<{ min: string; max: string }>({ min: '', max: '' });
+  const [searchQuery, setSearchQuery] = useState('');
   
   const categories = [...new Set(allProducts.map(p => p.category))];
   const brands = [...new Set(allProducts.map(p => p.brand))];
@@ -134,6 +136,29 @@ const ProductsPage: React.FC = () => {
     brands: [] as string[],
     onSale: false,
   });
+  
+  useEffect(() => {
+    const search = searchParams.get('search');
+    if (search) {
+      setSearchQuery(search);
+      filterProductsBySearch(search);
+    } else {
+      setProducts(allProducts);
+    }
+  }, [searchParams]);
+  
+  const filterProductsBySearch = (query: string) => {
+    if (!query.trim()) return allProducts;
+    
+    const lowercaseQuery = query.toLowerCase();
+    const filtered = allProducts.filter(product => 
+      product.name.toLowerCase().includes(lowercaseQuery) || 
+      product.category.toLowerCase().includes(lowercaseQuery) || 
+      product.brand.toLowerCase().includes(lowercaseQuery)
+    );
+    
+    setProducts(filtered);
+  };
   
   const toggleFilter = (type: 'categories' | 'brands', value: string) => {
     setFilters(prev => {
@@ -168,7 +193,7 @@ const ProductsPage: React.FC = () => {
   };
   
   const applyFilters = () => {
-    let filtered = [...allProducts];
+    let filtered = searchQuery ? [...products] : [...allProducts];
     
     // Filter by categories
     if (filters.categories.length > 0) {
@@ -224,14 +249,21 @@ const ProductsPage: React.FC = () => {
       onSale: false,
     });
     setPriceRange({ min: '', max: '' });
-    setProducts(allProducts);
+    
+    if (searchQuery) {
+      filterProductsBySearch(searchQuery);
+    } else {
+      setProducts(allProducts);
+    }
   };
 
   return (
     <div className="animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">All Products</h1>
+          <h1 className="text-2xl font-semibold">
+            {searchQuery ? `Search Results for "${searchQuery}"` : 'All Products'}
+          </h1>
           <p className="text-gray-500">{products.length} products found</p>
         </div>
         
@@ -262,7 +294,6 @@ const ProductsPage: React.FC = () => {
       </div>
       
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Filters Sidebar */}
         {showFilters && (
           <div className="w-full md:w-64 flex-shrink-0 bg-white p-5 rounded-lg border border-gray-200">
             <div className="flex justify-between items-center mb-4">
@@ -280,7 +311,6 @@ const ProductsPage: React.FC = () => {
             </div>
             
             <div className="space-y-6">
-              {/* Price Range */}
               <div>
                 <h3 className="font-medium mb-3">Price Range</h3>
                 <div className="flex items-center gap-2">
@@ -304,7 +334,6 @@ const ProductsPage: React.FC = () => {
               
               <Separator />
               
-              {/* Categories */}
               <div>
                 <h3 className="font-medium mb-3">Categories</h3>
                 <div className="space-y-2">
@@ -328,7 +357,6 @@ const ProductsPage: React.FC = () => {
               
               <Separator />
               
-              {/* Brands */}
               <div>
                 <h3 className="font-medium mb-3">Brands</h3>
                 <div className="space-y-2">
@@ -352,7 +380,6 @@ const ProductsPage: React.FC = () => {
               
               <Separator />
               
-              {/* On Sale */}
               <div className="flex items-center space-x-2">
                 <Checkbox 
                   id="sale-only" 
@@ -374,7 +401,6 @@ const ProductsPage: React.FC = () => {
           </div>
         )}
         
-        {/* Products Grid */}
         <div className="flex-1">
           {products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
