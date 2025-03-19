@@ -23,6 +23,17 @@ import Transactions from "./pages/manager/Transactions";
 import LoginPage from "./pages/auth/LoginPage";
 import SignupPage from "./pages/auth/SignupPage";
 
+// Customer pages
+import CustomerLayout from "./components/layout/CustomerLayout";
+import CustomerDashboard from "./pages/customer/CustomerDashboard";
+import OrdersPage from "./pages/customer/OrdersPage";
+import OrderHistoryPage from "./pages/customer/OrderHistoryPage";
+import OrderDetailsPage from "./pages/customer/OrderDetailsPage";
+import PaymentsPage from "./pages/customer/PaymentsPage";
+import FeedbackPage from "./pages/customer/FeedbackPage";
+import BrowseProductsPage from "./pages/customer/BrowseProductsPage";
+import SettingsPage from "./pages/customer/SettingsPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -44,6 +55,19 @@ const App = () => (
             <Route path="wishlist" element={<WishlistPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />
+          </Route>
+          
+          {/* Customer Routes */}
+          <Route path="/customer" element={<CustomerLayout />}>
+            <Route index element={<CustomerDashboard />} />
+            <Route path="orders" element={<OrdersPage />} />
+            <Route path="orders/:orderId" element={<OrderDetailsPage />} />
+            <Route path="order-history" element={<OrderHistoryPage />} />
+            <Route path="payments" element={<PaymentsPage />} />
+            <Route path="feedback" element={<FeedbackPage />} />
+            <Route path="browse-products" element={<BrowseProductsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="*" element={<Navigate to="/customer" replace />} />
           </Route>
           
           {/* Manager Routes */}
