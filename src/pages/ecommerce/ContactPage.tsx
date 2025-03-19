@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
-import { Mail, MapPin, Phone, MessageSquare, Send, Clock, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
+import { Mail, MapPin, Phone, MessageSquare, Send, Clock, CheckCircle, AlertCircle, HelpCircle, ShoppingBag } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const ContactPage: React.FC = () => {
