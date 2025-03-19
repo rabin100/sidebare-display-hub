@@ -11,7 +11,10 @@ import {
   Settings,
   Receipt,
   TrendingUp,
-  Activity
+  Activity,
+  Banknote,
+  Calculator,
+  BadgeDollarSign
 } from 'lucide-react';
 
 interface SidebarItemProps {
@@ -82,6 +85,24 @@ const FinanceSidebar: React.FC = () => {
           label="Reports" 
           href="/finance/reports" 
           active={isActive('/finance/reports')}
+        />
+        <SidebarItem 
+          icon={<Banknote className="h-4 w-4" />} 
+          label="Expenses" 
+          href="/finance/expenses" 
+          active={isActive('/finance/expenses')}
+        />
+        <SidebarItem 
+          icon={<BadgeDollarSign className="h-4 w-4" />} 
+          label="Payroll" 
+          href="/finance/payroll" 
+          active={isActive('/finance/payroll')}
+        />
+        <SidebarItem 
+          icon={<Calculator className="h-4 w-4" />} 
+          label="Budgeting" 
+          href="/finance/budgeting" 
+          active={isActive('/finance/budgeting')}
         />
         <SidebarItem 
           icon={<FileText className="h-4 w-4" />} 

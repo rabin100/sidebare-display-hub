@@ -46,6 +46,15 @@ import CheckoutPage from './pages/customer/CheckoutPage';
 // Finance Pages
 import FinanceDashboard from './pages/finance/FinanceDashboard';
 import TransactionsPage from './pages/finance/TransactionsPage';
+import InvoicesPage from './pages/finance/InvoicesPage';
+import RevenuePage from './pages/finance/RevenuePage';
+import ReportsPage from './pages/finance/ReportsPage';
+import ExpensesPage from './pages/finance/ExpensesPage';
+import PayrollPage from './pages/finance/PayrollPage';
+import BudgetingPage from './pages/finance/BudgetingPage';
+import DocumentsPage from './pages/finance/DocumentsPage';
+import CustomersPage from './pages/finance/CustomersPage';
+import FinanceSettingsPage from './pages/finance/SettingsPage';
 
 // Misc
 import NotFound from './pages/NotFound';
@@ -110,6 +119,15 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <FinanceDashboard /> },
       { path: 'transactions', element: <TransactionsPage /> },
+      { path: 'invoices', element: <InvoicesPage /> },
+      { path: 'revenue', element: <RevenuePage /> },
+      { path: 'reports', element: <ReportsPage /> },
+      { path: 'expenses', element: <ExpensesPage /> },
+      { path: 'payroll', element: <PayrollPage /> },
+      { path: 'budgeting', element: <BudgetingPage /> },
+      { path: 'documents', element: <DocumentsPage /> },
+      { path: 'customers', element: <CustomersPage /> },
+      { path: 'settings', element: <FinanceSettingsPage /> },
     ],
   },
   {
