@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Clock, CreditCard, MessageSquare, UserCircle } from 'lucide-react';
+import { ShoppingBag, Clock, CreditCard, MessageSquare, UserCircle, Mail, Calendar, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CustomerDashboard: React.FC = () => {

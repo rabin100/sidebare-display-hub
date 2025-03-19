@@ -26,7 +26,10 @@ import {
   Trash2, 
   Save, 
   Upload, 
-  Mail 
+  Mail,
+  Tag,
+  Sparkles,
+  MessageSquare 
 } from 'lucide-react';
 import { 
   AlertDialog,

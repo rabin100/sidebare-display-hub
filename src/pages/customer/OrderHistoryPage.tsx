@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -46,10 +45,9 @@ interface Order {
 const OrderHistoryPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [dateRange, setDateRange] = useState<{
-    from?: Date;
-    to?: Date;
-  }>({});
+  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to?: Date }>({
+    from: undefined
+  });
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   
   // Sample order history data
@@ -272,7 +270,7 @@ const OrderHistoryPage: React.FC = () => {
                 <Calendar
                   initialFocus
                   mode="range"
-                  selected={dateRange}
+                  selected={dateRange.from ? dateRange : undefined}
                   onSelect={setDateRange}
                   numberOfMonths={2}
                 />
