@@ -50,7 +50,6 @@ const OrderHistoryPage: React.FC = () => {
   });
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   
-  // Sample order history data
   const orders: Order[] = [
     {
       id: "ORD-1234",
@@ -126,22 +125,18 @@ const OrderHistoryPage: React.FC = () => {
     },
   ];
 
-  // Filter orders
   let filteredOrders = [...orders];
   
-  // Apply search filter
   if (searchTerm) {
     filteredOrders = filteredOrders.filter(order => 
       order.id.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
   
-  // Apply status filter
   if (statusFilter !== 'all') {
     filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
   }
   
-  // Apply date range filter
   if (dateRange.from) {
     const fromDate = new Date(dateRange.from);
     fromDate.setHours(0, 0, 0, 0);
@@ -164,7 +159,6 @@ const OrderHistoryPage: React.FC = () => {
     });
   }
   
-  // Apply sorting
   filteredOrders.sort((a, b) => {
     const dateA = new Date(a.date).getTime();
     const dateB = new Date(b.date).getTime();
@@ -173,14 +167,13 @@ const OrderHistoryPage: React.FC = () => {
 
   const handleExportHistory = () => {
     console.log('Exporting order history...');
-    // In a real app, you'd implement CSV or PDF export functionality here
     alert('Order history export started. Your file will be ready to download shortly.');
   };
   
   const handleClearFilters = () => {
     setSearchTerm('');
     setStatusFilter('all');
-    setDateRange({});
+    setDateRange({ from: undefined });
   };
 
   const toggleSortOrder = () => {
