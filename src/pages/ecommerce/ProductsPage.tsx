@@ -10,7 +10,9 @@ import {
   ChevronDown, 
   SlidersHorizontal, 
   X,
-  Check 
+  Check,
+  Plus,
+  Minus
 } from 'lucide-react';
 import { 
   Select, 
@@ -23,7 +25,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const allProducts = [
   {
@@ -214,10 +225,13 @@ const allProducts = [
 const ProductsPage: React.FC = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [products, setProducts] = useState(allProducts);
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState<{ min: string; max: string }>({ min: '', max: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState<typeof allProducts[0] | null>(null);
+  const [quantity, setQuantity] = useState(1);
   
   const categories = [...new Set(allProducts.map(p => p.category))];
   const brands = [...new Set(allProducts.map(p => p.brand))];
@@ -280,10 +294,30 @@ const ProductsPage: React.FC = () => {
   };
   
   const handleAddToCart = (productId: number, productName: string) => {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      setSelectedProduct(product);
+      setQuantity(1);
+    } else {
+      toast({
+        title: "Added to cart",
+        description: `${productName} has been added to your cart.`,
+      });
+    }
+  };
+  
+  const confirmAddToCart = () => {
+    if (!selectedProduct) return;
+    
     toast({
       title: "Added to cart",
-      description: `${productName} has been added to your cart.`,
+      description: `${quantity} x ${selectedProduct.name} has been added to your cart.`,
     });
+    
+    setSelectedProduct(null);
+    setQuantity(1);
+    
+    // In a real app, you would update the cart state/store here
   };
   
   const handleAddToWishlist = (productId: number, productName: string) => {
@@ -291,6 +325,25 @@ const ProductsPage: React.FC = () => {
       title: "Added to wishlist",
       description: `${productName} has been added to your wishlist.`,
     });
+  };
+  
+  const handleBuyNow = (productId: number) => {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      // Simulate adding to cart and going to checkout
+      toast({
+        title: "Processing order",
+        description: `Proceeding to checkout with ${product.name}.`,
+      });
+      
+      // Navigate to checkout page
+      navigate('/customer/checkout', { 
+        state: { 
+          products: [{ ...product, quantity: 1 }],
+          totalAmount: product.onSale ? product.salePrice : product.price 
+        } 
+      });
+    }
   };
   
   const applyFilters = () => {
@@ -553,13 +606,21 @@ const ProductsPage: React.FC = () => {
                         <span className="font-semibold">${product.price}</span>
                       )}
                     </div>
-                    <Button 
-                      className="w-full gap-2"
-                      onClick={() => handleAddToCart(product.id, product.name)}
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                      Add to Cart
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        className="flex-1 gap-2"
+                        onClick={() => handleAddToCart(product.id, product.name)}
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                        Add to Cart
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => handleBuyNow(product.id)}
+                      >
+                        Buy Now
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -573,6 +634,82 @@ const ProductsPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Product Quick Order Dialog */}
+      <Dialog open={!!selectedProduct} onOpenChange={(open) => !open && setSelectedProduct(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add to Cart</DialogTitle>
+            <DialogDescription>
+              Customize your order before adding to cart.
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedProduct && (
+            <div className="py-4">
+              <div className="flex items-center gap-4 mb-4">
+                <img 
+                  src={selectedProduct.image} 
+                  alt={selectedProduct.name} 
+                  className="w-16 h-16 object-cover rounded"
+                />
+                <div>
+                  <h3 className="font-medium">{selectedProduct.name}</h3>
+                  <p className="text-sm text-gray-500">{selectedProduct.brand}</p>
+                  <div className="flex items-center gap-2">
+                    {selectedProduct.onSale ? (
+                      <>
+                        <span className="font-semibold">${selectedProduct.salePrice}</span>
+                        <span className="text-gray-500 line-through text-sm">${selectedProduct.price}</span>
+                      </>
+                    ) : (
+                      <span className="font-semibold">${selectedProduct.price}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <label className="text-sm font-medium">Quantity</label>
+                <div className="flex items-center mt-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1}
+                  >
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                  <span className="mx-4 w-8 text-center">{quantity}</span>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setQuantity(quantity + 1)}
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between pt-2">
+                <span className="text-sm font-medium">Total:</span>
+                <span className="font-bold">
+                  ${((selectedProduct.onSale ? selectedProduct.salePrice! : selectedProduct.price) * quantity).toFixed(2)}
+                </span>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedProduct(null)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmAddToCart}>
+              Add to Cart
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

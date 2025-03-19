@@ -1,98 +1,125 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import NotFound from "./pages/NotFound";
-import AdminLayout from "./components/layout/AdminLayout";
-import Dashboard from "./pages/admin/Dashboard";
-import AccountRequests from "./pages/admin/AccountRequests";
-import EcommerceLayout from "./components/layout/EcommerceLayout";
-import HomePage from "./pages/ecommerce/HomePage";
-import ProductsPage from "./pages/ecommerce/ProductsPage";
-import CategoriesPage from "./pages/ecommerce/CategoriesPage";
-import AboutPage from "./pages/ecommerce/AboutPage";
-import ContactPage from "./pages/ecommerce/ContactPage";
-import WishlistPage from "./pages/ecommerce/WishlistPage";
-import ManagerLayout from "./components/layout/ManagerLayout";
-import InventoryManagement from "./pages/manager/InventoryManagement";
-import PriceManagement from "./pages/manager/PriceManagement";
-import Reports from "./pages/manager/Reports";
-import Transactions from "./pages/manager/Transactions";
-import LoginPage from "./pages/auth/LoginPage";
-import SignupPage from "./pages/auth/SignupPage";
+import React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import './App.css';
 
-// Customer pages
-import CustomerLayout from "./components/layout/CustomerLayout";
-import CustomerDashboard from "./pages/customer/CustomerDashboard";
-import OrdersPage from "./pages/customer/OrdersPage";
-import OrderHistoryPage from "./pages/customer/OrderHistoryPage";
-import OrderDetailsPage from "./pages/customer/OrderDetailsPage";
-import PaymentsPage from "./pages/customer/PaymentsPage";
-import FeedbackPage from "./pages/customer/FeedbackPage";
-import BrowseProductsPage from "./pages/customer/BrowseProductsPage";
-import SettingsPage from "./pages/customer/SettingsPage";
+// Layouts
+import EcommerceLayout from './components/layout/EcommerceLayout';
+import AdminLayout from './components/layout/AdminLayout';
+import ManagerLayout from './components/layout/ManagerLayout';
+import CustomerLayout from './components/layout/CustomerLayout';
+import FinanceLayout from './components/layout/FinanceLayout';
 
-const queryClient = new QueryClient();
+// Auth Pages
+import LoginPage from './pages/auth/LoginPage';
+import SignupPage from './pages/auth/SignupPage';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Authentication Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          
-          {/* E-commerce Routes */}
-          <Route path="/" element={<EcommerceLayout />}>
-            <Route index element={<HomePage />} />
-            <Route path="products" element={<ProductsPage />} />
-            <Route path="categories" element={<CategoriesPage />} />
-            <Route path="wishlist" element={<WishlistPage />} />
-            <Route path="about" element={<AboutPage />} />
-            <Route path="contact" element={<ContactPage />} />
-          </Route>
-          
-          {/* Customer Routes */}
-          <Route path="/customer" element={<CustomerLayout />}>
-            <Route index element={<CustomerDashboard />} />
-            <Route path="orders" element={<OrdersPage />} />
-            <Route path="orders/:orderId" element={<OrderDetailsPage />} />
-            <Route path="order-history" element={<OrderHistoryPage />} />
-            <Route path="payments" element={<PaymentsPage />} />
-            <Route path="feedback" element={<FeedbackPage />} />
-            <Route path="browse-products" element={<BrowseProductsPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            <Route path="*" element={<Navigate to="/customer" replace />} />
-          </Route>
-          
-          {/* Manager Routes */}
-          <Route path="/manager" element={<ManagerLayout />}>
-            <Route index element={<InventoryManagement />} />
-            <Route path="inventory" element={<InventoryManagement />} />
-            <Route path="pricing" element={<PriceManagement />} />
-            <Route path="reports" element={<Reports />} />
-            <Route path="transactions" element={<Transactions />} />
-            <Route path="*" element={<Navigate to="/manager" replace />} />
-          </Route>
-          
-          {/* Admin Routes */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="account-requests" element={<AccountRequests />} />
-            <Route path="*" element={<Navigate to="/admin" replace />} />
-          </Route>
-          
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+// Ecommerce Pages
+import HomePage from './pages/ecommerce/HomePage';
+import AboutPage from './pages/ecommerce/AboutPage';
+import ContactPage from './pages/ecommerce/ContactPage';
+import ProductsPage from './pages/ecommerce/ProductsPage';
+import CategoriesPage from './pages/ecommerce/CategoriesPage';
+import WishlistPage from './pages/ecommerce/WishlistPage';
+
+// Admin Pages
+import AdminDashboard from './pages/admin/Dashboard';
+import AccountRequests from './pages/admin/AccountRequests';
+
+// Manager Pages
+import InventoryManagement from './pages/manager/InventoryManagement';
+import PriceManagement from './pages/manager/PriceManagement';
+import Transactions from './pages/manager/Transactions';
+import Reports from './pages/manager/Reports';
+
+// Customer Pages
+import CustomerDashboard from './pages/customer/CustomerDashboard';
+import OrdersPage from './pages/customer/OrdersPage';
+import OrderDetailsPage from './pages/customer/OrderDetailsPage';
+import OrderHistoryPage from './pages/customer/OrderHistoryPage';
+import PaymentsPage from './pages/customer/PaymentsPage';
+import FeedbackPage from './pages/customer/FeedbackPage';
+import SettingsPage from './pages/customer/SettingsPage';
+import BrowseProductsPage from './pages/customer/BrowseProductsPage';
+import CheckoutPage from './pages/customer/CheckoutPage';
+
+// Finance Pages
+import FinanceDashboard from './pages/finance/FinanceDashboard';
+import TransactionsPage from './pages/finance/TransactionsPage';
+
+// Misc
+import NotFound from './pages/NotFound';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <EcommerceLayout />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'about', element: <AboutPage /> },
+      { path: 'contact', element: <ContactPage /> },
+      { path: 'products', element: <ProductsPage /> },
+      { path: 'categories', element: <CategoriesPage /> },
+      { path: 'wishlist', element: <WishlistPage /> },
+    ],
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/signup',
+    element: <SignupPage />,
+  },
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      { index: true, element: <AdminDashboard /> },
+      { path: 'account-requests', element: <AccountRequests /> },
+    ],
+  },
+  {
+    path: '/manager',
+    element: <ManagerLayout />,
+    children: [
+      { index: true, element: <InventoryManagement /> },
+      { path: 'price-management', element: <PriceManagement /> },
+      { path: 'transactions', element: <Transactions /> },
+      { path: 'reports', element: <Reports /> },
+    ],
+  },
+  {
+    path: '/customer',
+    element: <CustomerLayout />,
+    children: [
+      { index: true, element: <CustomerDashboard /> },
+      { path: 'orders', element: <OrdersPage /> },
+      { path: 'orders/:id', element: <OrderDetailsPage /> },
+      { path: 'history', element: <OrderHistoryPage /> },
+      { path: 'payments', element: <PaymentsPage /> },
+      { path: 'feedback', element: <FeedbackPage /> },
+      { path: 'settings', element: <SettingsPage /> },
+      { path: 'browse', element: <BrowseProductsPage /> },
+      { path: 'checkout', element: <CheckoutPage /> },
+    ],
+  },
+  {
+    path: '/finance',
+    element: <FinanceLayout />,
+    children: [
+      { index: true, element: <FinanceDashboard /> },
+      { path: 'transactions', element: <TransactionsPage /> },
+    ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+  },
+]);
+
+function App() {
+  return <RouterProvider router={router} />;
+}
 
 export default App;
