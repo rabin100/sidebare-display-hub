@@ -22,7 +22,7 @@ interface ChartProps {
   index: string;
   categories: string[];
   colors?: string[];
-  valueFormatter?: (value: number | string) => string;
+  valueFormatter?: (value: number | string | Array<number | string>) => string;
   yAxisWidth?: number;
   showLegend?: boolean;
   showXAxis?: boolean;
@@ -36,7 +36,12 @@ export function BarChart({
   index,
   categories,
   colors = ["#2563eb", "#f97316", "#8b5cf6", "#06b6d4"],
-  valueFormatter = (value: number | string) => value.toString(),
+  valueFormatter = (value: number | string | Array<number | string>) => {
+    if (Array.isArray(value)) {
+      return value.join(", ");
+    }
+    return value.toString();
+  },
   yAxisWidth = 40,
   showLegend = true,
   showXAxis = true,
@@ -97,7 +102,12 @@ export function LineChart({
   index,
   categories,
   colors = ["#2563eb", "#f97316", "#8b5cf6", "#06b6d4"],
-  valueFormatter = (value: number | string) => value.toString(),
+  valueFormatter = (value: number | string | Array<number | string>) => {
+    if (Array.isArray(value)) {
+      return value.join(", ");
+    }
+    return value.toString();
+  },
   yAxisWidth = 40,
   showLegend = true,
   showXAxis = true,
@@ -160,7 +170,12 @@ export function PieChart({
   index,
   categories,
   colors = ["#2563eb", "#f97316", "#8b5cf6", "#06b6d4"],
-  valueFormatter = (value: number | string) => value.toString(),
+  valueFormatter = (value: number | string | Array<number | string>) => {
+    if (Array.isArray(value)) {
+      return value.join(", ");
+    }
+    return value.toString();
+  },
   showLegend = true,
   showTooltip = true,
 }: Omit<ChartProps, "yAxisWidth" | "showXAxis" | "showYAxis" | "showGrid">) {
