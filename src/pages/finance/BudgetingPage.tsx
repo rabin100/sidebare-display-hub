@@ -1,13 +1,10 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  BarChart, 
-  LineChart 
-} from '@/components/ui/chart';
+import { ChartContainer } from '@/components/ui/chart';
+import { BarChart, LineChart } from '@/components/ui/charts';
 import { 
   PiggyBank,
   Wallet,

@@ -13,8 +13,8 @@ import {
   Calendar,
   RefreshCw,
   FileBarChart,
-  FilePieChart,
-  FileArea,
+  FilePieChart2,
+  FileLineChart,
   ExternalLink
 } from 'lucide-react';
 
@@ -99,14 +99,14 @@ const ReportsPage: React.FC = () => {
             <ReportCard 
               title="Cash Flow" 
               description="Monthly cash flow statement" 
-              icon={<FileArea className="h-5 w-5 text-primary" />} 
+              icon={<FileLineChart className="h-5 w-5 text-primary" />} 
               lastUpdated="Nov 15, 2023"
               category="financial"
             />
             <ReportCard 
               title="Expense Report" 
               description="Detailed breakdown of expenses" 
-              icon={<FilePieChart className="h-5 w-5 text-primary" />} 
+              icon={<FilePieChart2 className="h-5 w-5 text-primary" />} 
               lastUpdated="Nov 12, 2023"
               category="financial"
             />
@@ -146,7 +146,7 @@ const ReportsPage: React.FC = () => {
             <ReportCard 
               title="Customer Analysis" 
               description="Sales data by customer segments" 
-              icon={<FilePieChart className="h-5 w-5 text-primary" />} 
+              icon={<FilePieChart2 className="h-5 w-5 text-primary" />} 
               lastUpdated="Nov 14, 2023"
               category="sales"
             />

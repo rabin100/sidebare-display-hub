@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,7 +20,7 @@ import {
   Trash2,
   Receipt,
   FileText,
-  PieChart
+  PieChart as PieChartIcon
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -37,6 +36,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { PieChart } from '@/components/ui/charts';
 
 interface Expense {
   id: string;
@@ -201,7 +201,7 @@ const ExpensesPage: React.FC = () => {
               <FileText className="h-4 w-4" /> List View
             </TabsTrigger>
             <TabsTrigger value="categories" className="gap-2">
-              <PieChart className="h-4 w-4" /> Categories
+              <PieChartIcon className="h-4 w-4" /> Categories
             </TabsTrigger>
           </TabsList>
           

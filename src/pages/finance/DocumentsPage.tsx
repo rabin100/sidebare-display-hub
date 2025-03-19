@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,7 @@ import {
   Download,
   Trash2,
   FileImage,
-  FilePdf,
+  File,
   FileSpreadsheet,
   FileIcon,
   Clock,
@@ -122,7 +121,7 @@ const documents: Document[] = [
 ];
 
 const documentIcons = {
-  pdf: <FilePdf className="h-8 w-8 text-red-500" />,
+  pdf: <File className="h-8 w-8 text-red-500" />,
   excel: <FileSpreadsheet className="h-8 w-8 text-green-600" />,
   image: <FileImage className="h-8 w-8 text-blue-500" />,
   doc: <FileText className="h-8 w-8 text-blue-600" />,
