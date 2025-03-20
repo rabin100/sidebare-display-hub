@@ -3,17 +3,16 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, ShoppingCart, Heart } from 'lucide-react';
+import { Star, ShoppingCart } from 'lucide-react';
 import { Product } from '@/types/product';
 
 interface ProductCardProps {
   product: Product;
   onAddToCart: (productId: number, productName: string) => void;
-  onAddToWishlist: (productId: number, productName: string) => void;
   onBuyNow: (productId: number) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onAddToWishlist, onBuyNow }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onBuyNow }) => {
   return (
     <Card className="group overflow-hidden hover:shadow-md transition-shadow">
       <div className="relative">
@@ -22,12 +21,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onAddTo
           alt={product.name} 
           className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <button 
-          className="absolute top-3 right-3 h-8 w-8 bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors"
-          onClick={() => onAddToWishlist(product.id, product.name)}
-        >
-          <Heart className="h-4 w-4" />
-        </button>
         {product.onSale && (
           <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">
             Sale

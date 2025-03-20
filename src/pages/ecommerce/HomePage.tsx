@@ -3,8 +3,9 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, ShoppingCart, Heart } from 'lucide-react';
+import { Star, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
 
 const featuredProducts = [
   {
@@ -48,6 +49,15 @@ const featuredProducts = [
 ];
 
 const HomePage: React.FC = () => {
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    toast({
+      title: "Added to cart",
+      description: "This product has been added to your cart",
+    });
+  };
+
   return (
     <div className="space-y-8 animate-fade-in">
       <section className="relative rounded-xl overflow-hidden h-[400px] flex items-center">
@@ -86,9 +96,6 @@ const HomePage: React.FC = () => {
                   alt={product.name} 
                   className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <button className="absolute top-3 right-3 h-8 w-8 bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
-                  <Heart className="h-4 w-4" />
-                </button>
                 {product.onSale && (
                   <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">
                     Sale
@@ -112,7 +119,7 @@ const HomePage: React.FC = () => {
                     <span className="font-semibold">${product.price}</span>
                   )}
                 </div>
-                <Button className="w-full gap-2">
+                <Button className="w-full gap-2" onClick={handleAddToCart}>
                   <ShoppingCart className="h-4 w-4" />
                   Add to Cart
                 </Button>

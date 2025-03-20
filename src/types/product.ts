@@ -1,4 +1,3 @@
-
 export interface Product {
   id: number;
   name: string;
@@ -195,6 +194,144 @@ export const allProducts: Product[] = [
     onSale: false,
     category: 'Audio',
     brand: 'SoundBeats'
+  },
+  {
+    id: 17,
+    name: 'Stylish Backpack',
+    price: 79.99,
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62',
+    rating: 4.5,
+    ratingCount: 124,
+    onSale: true,
+    salePrice: 59.99,
+    category: 'Accessories',
+    brand: 'UrbanPack'
+  },
+  {
+    id: 18,
+    name: 'Indoor Plant',
+    price: 35.99,
+    image: 'https://images.unsplash.com/photo-1592150621744-aca64f48394a',
+    rating: 4.3,
+    ratingCount: 89,
+    onSale: false,
+    category: 'Home',
+    brand: 'GreenLife'
+  },
+  {
+    id: 19,
+    name: 'Yoga Mat',
+    price: 45.99,
+    image: 'https://images.unsplash.com/photo-1588286840104-8957b019727f',
+    rating: 4.7,
+    ratingCount: 231,
+    onSale: true,
+    salePrice: 39.99,
+    category: 'Fitness',
+    brand: 'FlexFit'
+  },
+  {
+    id: 20,
+    name: 'Smart Thermostat',
+    price: 129.99,
+    image: 'https://images.unsplash.com/photo-1605105854711-5eb8c310683c',
+    rating: 4.8,
+    ratingCount: 178,
+    onSale: false,
+    category: 'Smart Home',
+    brand: 'HomeConnect'
+  },
+  {
+    id: 21,
+    name: 'Desk Lamp',
+    price: 49.99,
+    image: 'https://images.unsplash.com/photo-1573297888763-60ca58287b5c',
+    rating: 4.4,
+    ratingCount: 115,
+    onSale: true,
+    salePrice: 39.99,
+    category: 'Home',
+    brand: 'LightMaster'
+  },
+  {
+    id: 22,
+    name: 'Premium Sunglasses',
+    price: 159.99,
+    image: 'https://images.unsplash.com/photo-1584036553516-bf83210aa16c',
+    rating: 4.6,
+    ratingCount: 92,
+    onSale: false,
+    category: 'Accessories',
+    brand: 'SunStyle'
+  },
+  {
+    id: 23,
+    name: 'Wireless Charger',
+    price: 39.99,
+    image: 'https://images.unsplash.com/photo-1601488834946-9517076be1ad',
+    rating: 4.5,
+    ratingCount: 154,
+    onSale: true,
+    salePrice: 29.99,
+    category: 'Electronics',
+    brand: 'PowerUp'
+  },
+  {
+    id: 24,
+    name: 'Electric Toothbrush',
+    price: 89.99,
+    image: 'https://images.unsplash.com/photo-1559590872-7031f2c4bfb7',
+    rating: 4.7,
+    ratingCount: 203,
+    onSale: false,
+    category: 'Personal Care',
+    brand: 'DentalPro'
+  },
+  {
+    id: 25,
+    name: 'Essential Oil Diffuser',
+    price: 45.99,
+    image: 'https://images.unsplash.com/photo-1618709246643-87d04666d231',
+    rating: 4.3,
+    ratingCount: 127,
+    onSale: true,
+    salePrice: 35.99,
+    category: 'Home',
+    brand: 'AromaBliss'
+  },
+  {
+    id: 26,
+    name: 'Coffee Maker',
+    price: 129.99,
+    image: 'https://images.unsplash.com/photo-1523567557034-462fba6014a1',
+    rating: 4.8,
+    ratingCount: 247,
+    onSale: false,
+    category: 'Kitchen',
+    brand: 'BrewMaster'
+  },
+  {
+    id: 27,
+    name: 'Wall Art',
+    price: 79.99,
+    image: 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69',
+    rating: 4.5,
+    ratingCount: 98,
+    onSale: true,
+    salePrice: 59.99,
+    category: 'Home Decor',
+    brand: 'ArtVibe'
+  },
+  {
+    id: 28,
+    name: 'Digital Drawing Tablet',
+    price: 199.99,
+    image: 'https://images.unsplash.com/photo-1569324077633-7247fb797f47',
+    rating: 4.7,
+    ratingCount: 156,
+    onSale: false,
+    category: 'Electronics',
+    brand: 'CreativePro'
   }
 ];
 

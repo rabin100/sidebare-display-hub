@@ -1,14 +1,12 @@
 
 import React, { useState } from 'react';
-import { Bell, Search, ShoppingCart, User, LogIn, UserPlus, Heart } from 'lucide-react';
+import { Search, User, LogIn, UserPlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Badge } from '@/components/ui/badge';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
@@ -50,20 +48,6 @@ const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
       </div>
       
       <div className="flex items-center gap-4">
-        <Link to="/wishlist" className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors">
-          <Badge variant="outline" className="p-0">
-            <Heart className="h-5 w-5 text-gray-700" />
-          </Badge>
-        </Link>
-        <Link to="/cart" className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors relative">
-          <ShoppingCart className="h-5 w-5 text-gray-700" />
-          <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0">2</Badge>
-        </Link>
-        <button className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors relative">
-          <Bell className="h-5 w-5 text-gray-700" />
-          <span className="absolute top-1 right-1.5 w-2 h-2 bg-blue-500 rounded-full"></span>
-        </button>
-        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="w-10 h-10 rounded-full p-0">
@@ -81,17 +65,6 @@ const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
               <Link to="/signup" className="flex items-center">
                 <UserPlus className="mr-2 h-4 w-4" />
                 <span>Sign Up</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild className="cursor-pointer">
-              <Link to="/admin" className="flex items-center">
-                <span>Admin Dashboard</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild className="cursor-pointer">
-              <Link to="/manager" className="flex items-center">
-                <span>Manager Dashboard</span>
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>

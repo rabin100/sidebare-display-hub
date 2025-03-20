@@ -16,7 +16,7 @@ import ProductCard from '@/components/ecommerce/ProductCard';
 import FilterSidebar from '@/components/ecommerce/FilterSidebar';
 import CartDialog from '@/components/ecommerce/CartDialog';
 import ProductQuantityDialog from '@/components/ecommerce/ProductQuantityDialog';
-import { Product, allProducts } from '@/types/product';
+import { Product } from '@/types/product';
 
 const ProductsPage: React.FC = () => {
   const { toast } = useToast();
@@ -73,13 +73,6 @@ const ProductsPage: React.FC = () => {
     handleAddToCart(selectedProduct, quantity);
     setSelectedProduct(null);
     setQuantity(1);
-  };
-  
-  const handleAddToWishlist = (productId: number, productName: string) => {
-    toast({
-      title: "Added to wishlist",
-      description: `${productName} has been added to your wishlist.`,
-    });
   };
   
   const handleBuyNowClick = (productId: number) => {
@@ -163,7 +156,6 @@ const ProductsPage: React.FC = () => {
                   key={product.id}
                   product={product}
                   onAddToCart={handleAddToCartClick}
-                  onAddToWishlist={handleAddToWishlist}
                   onBuyNow={handleBuyNowClick}
                 />
               ))}
