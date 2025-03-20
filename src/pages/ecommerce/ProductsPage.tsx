@@ -1,20 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { 
-  Star, 
-  ShoppingCart, 
-  Heart, 
-  Filter, 
-  ChevronDown, 
-  SlidersHorizontal, 
-  X,
-  Check,
-  Plus,
-  Minus,
-  ArrowRight
-} from 'lucide-react';
+import { Filter, ShoppingCart } from 'lucide-react';
 import { 
   Select, 
   SelectContent, 
@@ -22,293 +9,53 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { createOrder, OrderItem } from '@/utils/orderUtils';
-
-const allProducts = [
-  {
-    id: 1,
-    name: 'Wireless Headphones',
-    price: 149.99,
-    image: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9',
-    rating: 4.8,
-    ratingCount: 356,
-    onSale: true,
-    salePrice: 129.99,
-    category: 'Electronics',
-    brand: 'SoundBeats'
-  },
-  {
-    id: 2,
-    name: 'Premium Laptop',
-    price: 1299.99,
-    image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
-    rating: 4.9,
-    ratingCount: 412,
-    onSale: false,
-    category: 'Electronics',
-    brand: 'TechPro'
-  },
-  {
-    id: 3,
-    name: 'Smart Watch',
-    price: 299.99,
-    image: 'https://images.unsplash.com/photo-1549482199-bc1ca6f58502',
-    rating: 4.7,
-    ratingCount: 284,
-    onSale: true,
-    salePrice: 249.99,
-    category: 'Wearables',
-    brand: 'SmartLife'
-  },
-  {
-    id: 4,
-    name: 'Modern Desk Chair',
-    price: 199.99,
-    image: 'https://images.unsplash.com/photo-1596162954151-cdcb4c0f70a8',
-    rating: 4.6,
-    ratingCount: 178,
-    onSale: false,
-    category: 'Furniture',
-    brand: 'ComfortPlus'
-  },
-  {
-    id: 5,
-    name: 'Wireless Mouse',
-    price: 49.99,
-    image: 'https://images.unsplash.com/photo-1611366652918-63ec707e5c3e',
-    rating: 4.5,
-    ratingCount: 156,
-    onSale: false,
-    category: 'Electronics',
-    brand: 'TechPro'
-  },
-  {
-    id: 6,
-    name: 'Mechanical Keyboard',
-    price: 129.99,
-    image: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef',
-    rating: 4.8,
-    ratingCount: 203,
-    onSale: true,
-    salePrice: 99.99,
-    category: 'Electronics',
-    brand: 'KeyMaster'
-  },
-  {
-    id: 7,
-    name: 'Coffee Table',
-    price: 249.99,
-    image: 'https://images.unsplash.com/photo-1588784189346-9eb9d5509303',
-    rating: 4.4,
-    ratingCount: 124,
-    onSale: false,
-    category: 'Furniture',
-    brand: 'HomeDesign'
-  },
-  {
-    id: 8,
-    name: 'Fitness Tracker',
-    price: 89.99,
-    image: 'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6',
-    rating: 4.6,
-    ratingCount: 187,
-    onSale: true,
-    salePrice: 69.99,
-    category: 'Wearables',
-    brand: 'FitLife'
-  },
-  {
-    id: 9,
-    name: 'Digital Camera',
-    price: 699.99,
-    image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32',
-    rating: 4.7,
-    ratingCount: 142,
-    onSale: false,
-    category: 'Cameras',
-    brand: 'PhotoMaster'
-  },
-  {
-    id: 10,
-    name: 'Gaming Console',
-    price: 499.99,
-    image: 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3',
-    rating: 4.9,
-    ratingCount: 315,
-    onSale: false,
-    category: 'Gaming',
-    brand: 'GameTech'
-  },
-  {
-    id: 11,
-    name: 'Bluetooth Speaker',
-    price: 79.99,
-    image: 'https://images.unsplash.com/photo-1589003077984-894e133dabab',
-    rating: 4.5,
-    ratingCount: 213,
-    onSale: true,
-    salePrice: 59.99,
-    category: 'Audio',
-    brand: 'SoundBeats'
-  },
-  {
-    id: 12,
-    name: 'Standing Desk',
-    price: 349.99,
-    image: 'https://images.unsplash.com/photo-1593642634443-44adaa06623a',
-    rating: 4.6,
-    ratingCount: 98,
-    onSale: false,
-    category: 'Furniture',
-    brand: 'ErgoWorks'
-  },
-  {
-    id: 13,
-    name: 'Designer Watch',
-    price: 199.99,
-    image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d',
-    rating: 4.8,
-    ratingCount: 167,
-    onSale: true,
-    salePrice: 149.99,
-    category: 'Wearables',
-    brand: 'TimeMaster'
-  },
-  {
-    id: 14,
-    name: 'Graphic T-Shirt',
-    price: 24.99,
-    image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27',
-    rating: 4.3,
-    ratingCount: 219,
-    onSale: false,
-    category: 'Clothing',
-    brand: 'UrbanStyle'
-  },
-  {
-    id: 15,
-    name: 'Smart Blender',
-    price: 129.99,
-    image: 'https://images.unsplash.com/photo-1525373612132-b3e820b87cea',
-    rating: 4.4,
-    ratingCount: 87,
-    onSale: true,
-    salePrice: 99.99,
-    category: 'Kitchen',
-    brand: 'HomeChef'
-  },
-  {
-    id: 16,
-    name: 'Wireless Earbuds',
-    price: 129.99,
-    image: 'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46',
-    rating: 4.7,
-    ratingCount: 341,
-    onSale: false,
-    category: 'Audio',
-    brand: 'SoundBeats'
-  }
-];
+import { useCart } from '@/hooks/useCart';
+import { useProductFilter } from '@/hooks/useProductFilter';
+import ProductCard from '@/components/ecommerce/ProductCard';
+import FilterSidebar from '@/components/ecommerce/FilterSidebar';
+import CartDialog from '@/components/ecommerce/CartDialog';
+import ProductQuantityDialog from '@/components/ecommerce/ProductQuantityDialog';
+import { Product, allProducts } from '@/types/product';
 
 const ProductsPage: React.FC = () => {
   const { toast } = useToast();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const [products, setProducts] = useState(allProducts);
-  const [showFilters, setShowFilters] = useState(false);
-  const [priceRange, setPriceRange] = useState<{ min: string; max: string }>({ min: '', max: '' });
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<typeof allProducts[0] | null>(null);
+  const {
+    products,
+    showFilters,
+    setShowFilters,
+    searchQuery,
+    priceRange,
+    setPriceRange,
+    filters,
+    categories,
+    brands,
+    toggleFilter,
+    applyFilters,
+    resetFilters,
+    setFilters
+  } = useProductFilter();
+
+  const {
+    cart,
+    showCheckoutDialog,
+    setShowCheckoutDialog,
+    cartTotal,
+    cartItemCount,
+    handleAddToCart,
+    handleViewCart,
+    handleClearCart,
+    handleRemoveItem,
+    handleUpdateQuantity,
+    handleCheckout,
+    handlePlaceOrderDirectly,
+    handleBuyNow
+  } = useCart();
+
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [cart, setCart] = useState<OrderItem[]>([]);
-  const [showCheckoutDialog, setShowCheckoutDialog] = useState(false);
-  
-  const categories = [...new Set(allProducts.map(p => p.category))];
-  const brands = [...new Set(allProducts.map(p => p.brand))];
-  
-  const [filters, setFilters] = useState({
-    categories: [] as string[],
-    brands: [] as string[],
-    onSale: false,
-  });
-  
-  useEffect(() => {
-    const search = searchParams.get('search');
-    const category = searchParams.get('category');
-    
-    let filteredProducts = [...allProducts];
-    
-    if (search) {
-      setSearchQuery(search);
-      const lowercaseQuery = search.toLowerCase();
-      filteredProducts = filteredProducts.filter(product => 
-        product.name.toLowerCase().includes(lowercaseQuery) || 
-        product.category.toLowerCase().includes(lowercaseQuery) || 
-        product.brand.toLowerCase().includes(lowercaseQuery)
-      );
-    }
-    
-    if (category) {
-      const updatedFilters = { ...filters };
-      const categoryName = categories.find(c => c.toLowerCase() === category.toLowerCase());
-      
-      if (categoryName && !filters.categories.includes(categoryName)) {
-        updatedFilters.categories = [categoryName];
-        setFilters(updatedFilters);
-        
-        filteredProducts = filteredProducts.filter(p => 
-          p.category.toLowerCase() === category.toLowerCase()
-        );
-      }
-    }
-    
-    setProducts(filteredProducts);
-  }, [searchParams]);
-  
-  useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-  }, []);
-  
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
-  
-  const toggleFilter = (type: 'categories' | 'brands', value: string) => {
-    setFilters(prev => {
-      const currentValues = [...prev[type]];
-      const index = currentValues.indexOf(value);
-      
-      if (index === -1) {
-        currentValues.push(value);
-      } else {
-        currentValues.splice(index, 1);
-      }
-      
-      return {
-        ...prev,
-        [type]: currentValues
-      };
-    });
-  };
-  
-  const handleAddToCart = (productId: number, productName: string) => {
+
+  const handleAddToCartClick = (productId: number, productName: string) => {
     const product = products.find(p => p.id === productId);
     if (product) {
       setSelectedProduct(product);
@@ -323,34 +70,7 @@ const ProductsPage: React.FC = () => {
   
   const confirmAddToCart = () => {
     if (!selectedProduct) return;
-    
-    const productPrice = selectedProduct.onSale ? selectedProduct.salePrice! : selectedProduct.price;
-    
-    const newItem: OrderItem = {
-      id: selectedProduct.id,
-      name: selectedProduct.name,
-      price: selectedProduct.price,
-      salePrice: selectedProduct.salePrice,
-      onSale: selectedProduct.onSale,
-      quantity: quantity,
-      image: selectedProduct.image
-    };
-    
-    const existingItemIndex = cart.findIndex(item => item.id === selectedProduct.id);
-    
-    if (existingItemIndex !== -1) {
-      const updatedCart = [...cart];
-      updatedCart[existingItemIndex].quantity += quantity;
-      setCart(updatedCart);
-    } else {
-      setCart(prev => [...prev, newItem]);
-    }
-    
-    toast({
-      title: "Added to cart",
-      description: `${quantity} x ${selectedProduct.name} has been added to your cart.`,
-    });
-    
+    handleAddToCart(selectedProduct, quantity);
     setSelectedProduct(null);
     setQuantity(1);
   };
@@ -362,188 +82,16 @@ const ProductsPage: React.FC = () => {
     });
   };
   
-  const handleBuyNow = (productId: number) => {
+  const handleBuyNowClick = (productId: number) => {
     const product = products.find(p => p.id === productId);
     if (product) {
-      const newItem: OrderItem = {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        salePrice: product.salePrice,
-        onSale: product.onSale,
-        quantity: 1,
-        image: product.image
-      };
-      
-      setCart([newItem]);
-      
-      navigate('/customer/checkout', { 
-        state: { 
-          products: [newItem],
-          totalAmount: product.onSale ? product.salePrice! : product.price 
-        } 
-      });
+      handleBuyNow(product);
     }
   };
 
-  const handleViewCart = () => {
-    setShowCheckoutDialog(true);
+  const handleSaleToggle = (value: boolean) => {
+    setFilters(prev => ({ ...prev, onSale: value }));
   };
-
-  const handleClearCart = () => {
-    setCart([]);
-    setShowCheckoutDialog(false);
-    toast({
-      title: "Cart cleared",
-      description: "All items have been removed from your cart."
-    });
-  };
-
-  const handleRemoveItem = (productId: number) => {
-    setCart(prev => prev.filter(item => item.id !== productId));
-    toast({
-      title: "Item removed",
-      description: "Item has been removed from your cart."
-    });
-  };
-
-  const handleUpdateQuantity = (productId: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    
-    setCart(prev => prev.map(item => 
-      item.id === productId ? { ...item, quantity: newQuantity } : item
-    ));
-  };
-
-  const handleCheckout = () => {
-    if (cart.length === 0) {
-      toast({
-        title: "Cart is empty",
-        description: "Please add items to your cart before checking out.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    const totalAmount = cart.reduce(
-      (sum, item) => sum + (item.onSale ? item.salePrice! : item.price) * item.quantity, 
-      0
-    );
-    
-    navigate('/customer/checkout', { 
-      state: { 
-        products: cart,
-        totalAmount: totalAmount
-      }
-    });
-    setShowCheckoutDialog(false);
-  };
-
-  const handlePlaceOrderDirectly = () => {
-    if (cart.length === 0) {
-      toast({
-        title: "Cart is empty",
-        description: "Please add items to your cart before placing an order.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    const newOrder = createOrder(cart);
-    
-    setCart([]);
-    setShowCheckoutDialog(false);
-    
-    toast({
-      title: "Order Placed Successfully!",
-      description: `Your order #${newOrder.id} has been confirmed.`,
-    });
-    
-    navigate('/customer/history');
-  };
-  
-  const applyFilters = () => {
-    let filtered = [...allProducts];
-    
-    if (filters.categories.length > 0) {
-      filtered = filtered.filter(p => filters.categories.includes(p.category));
-    }
-    
-    if (filters.brands.length > 0) {
-      filtered = filtered.filter(p => filters.brands.includes(p.brand));
-    }
-    
-    if (priceRange.min && priceRange.max) {
-      const min = parseFloat(priceRange.min);
-      const max = parseFloat(priceRange.max);
-      
-      if (!isNaN(min) && !isNaN(max)) {
-        filtered = filtered.filter(p => {
-          const priceToCheck = p.onSale ? p.salePrice! : p.price;
-          return priceToCheck >= min && priceToCheck <= max;
-        });
-      }
-    } else if (priceRange.min) {
-      const min = parseFloat(priceRange.min);
-      if (!isNaN(min)) {
-        filtered = filtered.filter(p => {
-          const priceToCheck = p.onSale ? p.salePrice! : p.price;
-          return priceToCheck >= min;
-        });
-      }
-    } else if (priceRange.max) {
-      const max = parseFloat(priceRange.max);
-      if (!isNaN(max)) {
-        filtered = filtered.filter(p => {
-          const priceToCheck = p.onSale ? p.salePrice! : p.price;
-          return priceToCheck <= max;
-        });
-      }
-    }
-    
-    if (searchQuery) {
-      const lowercaseQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter(product => 
-        product.name.toLowerCase().includes(lowercaseQuery) || 
-        product.category.toLowerCase().includes(lowercaseQuery) || 
-        product.brand.toLowerCase().includes(lowercaseQuery)
-      );
-    }
-    
-    if (filters.onSale) {
-      filtered = filtered.filter(p => p.onSale);
-    }
-    
-    setProducts(filtered);
-  };
-  
-  const resetFilters = () => {
-    setFilters({
-      categories: [],
-      brands: [],
-      onSale: false,
-    });
-    setPriceRange({ min: '', max: '' });
-    
-    if (searchQuery) {
-      const lowercaseQuery = searchQuery.toLowerCase();
-      const filtered = allProducts.filter(product => 
-        product.name.toLowerCase().includes(lowercaseQuery) || 
-        product.category.toLowerCase().includes(lowercaseQuery) || 
-        product.brand.toLowerCase().includes(lowercaseQuery)
-      );
-      setProducts(filtered);
-    } else {
-      setProducts(allProducts);
-    }
-  };
-
-  const cartTotal = cart.reduce(
-    (sum, item) => sum + (item.onSale ? item.salePrice! : item.price) * item.quantity, 
-    0
-  );
-  
-  const cartItemCount = cart.reduce((count, item) => count + item.quantity, 0);
 
   return (
     <div className="animate-fade-in">
@@ -594,169 +142,30 @@ const ProductsPage: React.FC = () => {
       
       <div className="flex flex-col md:flex-row gap-6">
         {showFilters && (
-          <div className="w-full md:w-64 flex-shrink-0 bg-white p-5 rounded-lg border border-gray-200">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="font-semibold flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4" /> Filters
-              </h2>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-8 w-8 p-0"
-                onClick={resetFilters}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-medium mb-3">Price Range</h3>
-                <div className="flex items-center gap-2">
-                  <Input 
-                    type="number" 
-                    placeholder="Min" 
-                    value={priceRange.min}
-                    onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
-                    className="h-9"
-                  />
-                  <span>-</span>
-                  <Input 
-                    type="number" 
-                    placeholder="Max" 
-                    value={priceRange.max}
-                    onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
-                    className="h-9"
-                  />
-                </div>
-              </div>
-              
-              <Separator />
-              
-              <div>
-                <h3 className="font-medium mb-3">Categories</h3>
-                <div className="space-y-2">
-                  {categories.map((category) => (
-                    <div key={category} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`category-${category}`} 
-                        checked={filters.categories.includes(category)}
-                        onCheckedChange={() => toggleFilter('categories', category)}
-                      />
-                      <label
-                        htmlFor={`category-${category}`}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        {category}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <Separator />
-              
-              <div>
-                <h3 className="font-medium mb-3">Brands</h3>
-                <div className="space-y-2">
-                  {brands.map((brand) => (
-                    <div key={brand} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`brand-${brand}`} 
-                        checked={filters.brands.includes(brand)}
-                        onCheckedChange={() => toggleFilter('brands', brand)}
-                      />
-                      <label
-                        htmlFor={`brand-${brand}`}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        {brand}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <Separator />
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="sale-only" 
-                  checked={filters.onSale}
-                  onCheckedChange={() => setFilters(prev => ({ ...prev, onSale: !prev.onSale }))}
-                />
-                <label
-                  htmlFor="sale-only"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  On Sale Only
-                </label>
-              </div>
-              
-              <Button className="w-full" onClick={applyFilters}>
-                Apply Filters
-              </Button>
-            </div>
-          </div>
+          <FilterSidebar
+            categories={categories}
+            brands={brands}
+            priceRange={priceRange}
+            filters={filters}
+            onPriceRangeChange={setPriceRange}
+            onToggleFilter={toggleFilter}
+            onSaleToggle={handleSaleToggle}
+            onApplyFilters={applyFilters}
+            onResetFilters={resetFilters}
+          />
         )}
         
         <div className="flex-1">
           {products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product) => (
-                <Card key={product.id} className="group overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="relative">
-                    <img 
-                      src={product.image} 
-                      alt={product.name} 
-                      className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <button 
-                      className="absolute top-3 right-3 h-8 w-8 bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors"
-                      onClick={() => handleAddToWishlist(product.id, product.name)}
-                    >
-                      <Heart className="h-4 w-4" />
-                    </button>
-                    {product.onSale && (
-                      <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">
-                        Sale
-                      </Badge>
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-1 mb-2">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm font-medium">{product.rating}</span>
-                      <span className="text-xs text-gray-500">({product.ratingCount})</span>
-                    </div>
-                    <h3 className="font-medium text-lg mb-1">{product.name}</h3>
-                    <div className="flex items-center gap-2 mb-3">
-                      {product.onSale ? (
-                        <>
-                          <span className="font-semibold">${product.salePrice}</span>
-                          <span className="text-gray-500 line-through text-sm">${product.price}</span>
-                        </>
-                      ) : (
-                        <span className="font-semibold">${product.price}</span>
-                      )}
-                    </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        className="flex-1 gap-2"
-                        onClick={() => handleAddToCart(product.id, product.name)}
-                      >
-                        <ShoppingCart className="h-4 w-4" />
-                        Add to Cart
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        onClick={() => handleBuyNow(product.id)}
-                      >
-                        Buy Now
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={handleAddToCartClick}
+                  onAddToWishlist={handleAddToWishlist}
+                  onBuyNow={handleBuyNowClick}
+                />
               ))}
             </div>
           ) : (
@@ -769,189 +178,25 @@ const ProductsPage: React.FC = () => {
         </div>
       </div>
 
-      <Dialog open={!!selectedProduct} onOpenChange={(open) => !open && setSelectedProduct(null)}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Add to Cart</DialogTitle>
-            <DialogDescription>
-              Customize your order before adding to cart.
-            </DialogDescription>
-          </DialogHeader>
+      <ProductQuantityDialog
+        product={selectedProduct}
+        quantity={quantity}
+        onQuantityChange={setQuantity}
+        onConfirm={confirmAddToCart}
+        onCancel={() => setSelectedProduct(null)}
+      />
 
-          {selectedProduct && (
-            <div className="py-4">
-              <div className="flex items-center gap-4 mb-4">
-                <img 
-                  src={selectedProduct.image} 
-                  alt={selectedProduct.name} 
-                  className="w-16 h-16 object-cover rounded"
-                />
-                <div>
-                  <h3 className="font-medium">{selectedProduct.name}</h3>
-                  <p className="text-sm text-gray-500">{selectedProduct.brand}</p>
-                  <div className="flex items-center gap-2">
-                    {selectedProduct.onSale ? (
-                      <>
-                        <span className="font-semibold">${selectedProduct.salePrice}</span>
-                        <span className="text-gray-500 line-through text-sm">${selectedProduct.price}</span>
-                      </>
-                    ) : (
-                      <span className="font-semibold">${selectedProduct.price}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mb-4">
-                <label className="text-sm font-medium">Quantity</label>
-                <div className="flex items-center mt-1">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={quantity <= 1}
-                  >
-                    <Minus className="h-3 w-3" />
-                  </Button>
-                  <span className="mx-4 w-8 text-center">{quantity}</span>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => setQuantity(quantity + 1)}
-                  >
-                    <Plus className="h-3 w-3" />
-                  </Button>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between pt-2">
-                <span className="text-sm font-medium">Total:</span>
-                <span className="font-bold">
-                  ${((selectedProduct.onSale ? selectedProduct.salePrice! : selectedProduct.price) * quantity).toFixed(2)}
-                </span>
-              </div>
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedProduct(null)}>
-              Cancel
-            </Button>
-            <Button onClick={confirmAddToCart}>
-              Add to Cart
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showCheckoutDialog} onOpenChange={setShowCheckoutDialog}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Your Shopping Cart</DialogTitle>
-            <DialogDescription>
-              Review your items before checkout
-            </DialogDescription>
-          </DialogHeader>
-
-          {cart.length > 0 ? (
-            <div className="py-4">
-              <div className="max-h-[300px] overflow-y-auto space-y-4 pr-2">
-                {cart.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3 border-b pb-3">
-                    <img 
-                      src={item.image} 
-                      alt={item.name} 
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-medium text-sm">{item.name}</h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        {item.onSale ? (
-                          <>
-                            <span className="font-semibold text-sm">${item.salePrice}</span>
-                            <span className="text-gray-500 line-through text-xs">${item.price}</span>
-                          </>
-                        ) : (
-                          <span className="font-semibold text-sm">${item.price}</span>
-                        )}
-                      </div>
-                      <div className="flex items-center mt-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="h-7 w-7 p-0"
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                          disabled={item.quantity <= 1}
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="mx-2 w-6 text-center text-sm">{item.quantity}</span>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        ${((item.onSale ? item.salePrice! : item.price) * item.quantity).toFixed(2)}
-                      </p>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 p-0 mt-1 text-red-500 hover:text-red-700"
-                        onClick={() => handleRemoveItem(item.id)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-4 pt-4 border-t">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">Subtotal:</span>
-                  <span className="font-bold text-lg">${cartTotal.toFixed(2)}</span>
-                </div>
-                <p className="text-sm text-gray-500 mt-1">
-                  Taxes and shipping calculated at checkout
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="py-8 text-center">
-              <ShoppingCart className="h-12 w-12 mx-auto text-gray-300 mb-3" />
-              <p className="text-gray-500">Your cart is empty</p>
-            </div>
-          )}
-
-          <DialogFooter className="flex-col sm:flex-row gap-2">
-            {cart.length > 0 && (
-              <>
-                <Button variant="outline" onClick={handleClearCart} className="sm:mr-auto">
-                  Clear Cart
-                </Button>
-                <Button variant="outline" onClick={handlePlaceOrderDirectly}>
-                  Place Order
-                </Button>
-                <Button onClick={handleCheckout}>
-                  Checkout <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </>
-            )}
-            {cart.length === 0 && (
-              <Button onClick={() => setShowCheckoutDialog(false)}>
-                Continue Shopping
-              </Button>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <CartDialog
+        open={showCheckoutDialog}
+        onOpenChange={setShowCheckoutDialog}
+        cart={cart}
+        onClearCart={handleClearCart}
+        onRemoveItem={handleRemoveItem}
+        onUpdateQuantity={handleUpdateQuantity}
+        onCheckout={handleCheckout}
+        onPlaceOrderDirectly={handlePlaceOrderDirectly}
+        cartTotal={cartTotal}
+      />
     </div>
   );
 };
