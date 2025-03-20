@@ -1,8 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/components/ui/use-toast';
-import { OrderItem, createOrder } from '@/utils/orderUtils';
+import { useToast } from '@/hooks/use-toast';
+import { OrderItem, createOrder, clearCart } from '@/utils/orderUtils';
 import { Product } from '@/types/product';
 
 export const useCart = () => {
@@ -137,8 +137,6 @@ export const useCart = () => {
       quantity: 1,
       image: product.image
     };
-    
-    setCart([newItem]);
     
     navigate('/customer/checkout', { 
       state: { 

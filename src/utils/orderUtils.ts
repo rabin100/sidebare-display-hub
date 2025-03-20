@@ -71,3 +71,15 @@ export const getOrderById = (orderId: string): Order | undefined => {
 export const clearCart = () => {
   localStorage.removeItem('cart');
 };
+
+// Update order status
+export const updateOrderStatus = (orderId: string, status: Order['status']): boolean => {
+  const orders = getOrders();
+  const orderIndex = orders.findIndex(order => order.id === orderId);
+  
+  if (orderIndex === -1) return false;
+  
+  orders[orderIndex].status = status;
+  saveOrders(orders);
+  return true;
+};

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,22 +19,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
-
-interface Order {
-  id: string;
-  date: string;
-  items: {
-    name: string;
-    quantity: number;
-    price: number;
-    image: string;
-  }[];
-  total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  trackingNumber?: string;
-  estimatedDelivery?: string;
-  paymentMethod: string;
-}
+import { getOrders, Order } from '@/utils/orderUtils';
 
 const OrderStatusBadge: React.FC<{ status: Order['status'] }> = ({ status }) => {
   const statusConfig = {
@@ -60,81 +45,13 @@ const OrdersPage: React.FC = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
+  const [orders, setOrders] = useState<Order[]>([]);
   
-  // Sample order data
-  const orders: Order[] = [
-    {
-      id: "ORD-1234",
-      date: "2023-06-15",
-      items: [
-        {
-          name: "Wireless Headphones",
-          quantity: 1,
-          price: 129.99,
-          image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9",
-        },
-      ],
-      total: 129.99,
-      status: "delivered",
-      trackingNumber: "TRK-789012",
-      estimatedDelivery: "Delivered on June 20, 2023",
-      paymentMethod: "Credit Card ending in 4321",
-    },
-    {
-      id: "ORD-1235",
-      date: "2023-06-02",
-      items: [
-        {
-          name: "Smartwatch",
-          quantity: 1,
-          price: 199.99,
-          image: "https://images.unsplash.com/photo-1549482199-bc1ca6f58502",
-        },
-        {
-          name: "Wireless Earbuds",
-          quantity: 1,
-          price: 89.99,
-          image: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46",
-        },
-      ],
-      total: 289.98,
-      status: "shipped",
-      trackingNumber: "TRK-567890",
-      estimatedDelivery: "Expected delivery: June 25, 2023",
-      paymentMethod: "PayPal",
-    },
-    {
-      id: "ORD-1236",
-      date: "2023-05-28",
-      items: [
-        {
-          name: "Bluetooth Speaker",
-          quantity: 1,
-          price: 79.99,
-          image: "https://images.unsplash.com/photo-1589003077984-894e133dabab",
-        },
-      ],
-      total: 79.99,
-      status: "processing",
-      estimatedDelivery: "Expected to ship: June 30, 2023",
-      paymentMethod: "Credit Card ending in 4321",
-    },
-    {
-      id: "ORD-1237",
-      date: "2023-05-20",
-      items: [
-        {
-          name: "Mechanical Keyboard",
-          quantity: 1,
-          price: 129.99,
-          image: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef",
-        },
-      ],
-      total: 129.99,
-      status: "pending",
-      paymentMethod: "Bank Transfer",
-    },
-  ];
+  useEffect(() => {
+    // Get orders from localStorage
+    const customerOrders = getOrders();
+    setOrders(customerOrders);
+  }, []);
 
   // Filter orders by search term
   const filteredOrders = orders.filter(order => 
@@ -149,10 +66,12 @@ const OrdersPage: React.FC = () => {
 
   const handleTrackOrder = (orderId: string) => {
     const order = orders.find(o => o.id === orderId);
-    if (order && order.trackingNumber) {
+    if (order) {
       toast({
         title: "Tracking Information",
-        description: `Tracking number: ${order.trackingNumber}. ${order.estimatedDelivery}`,
+        description: order.status === 'shipped' 
+          ? `Your order is on the way. Expected delivery in 3-5 business days.`
+          : `Your order is being processed and will ship soon.`,
       });
     } else {
       toast({
@@ -221,11 +140,11 @@ const OrdersPage: React.FC = () => {
                         <div className="flex-1">
                           <p className="font-medium">{item.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            Qty: {item.quantity} × ${item.price.toFixed(2)}
+                            Qty: {item.quantity} × ${(item.onSale ? item.salePrice : item.price)?.toFixed(2)}
                           </p>
                         </div>
                         <div className="text-right text-sm">
-                          ${(item.quantity * item.price).toFixed(2)}
+                          ${((item.onSale ? item.salePrice! : item.price) * item.quantity).toFixed(2)}
                         </div>
                       </div>
                     ))}
@@ -237,12 +156,6 @@ const OrdersPage: React.FC = () => {
                         <CreditCard className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{order.paymentMethod}</span>
                       </div>
-                      {order.trackingNumber && (
-                        <div className="flex items-center gap-2">
-                          <Truck className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{order.estimatedDelivery}</span>
-                        </div>
-                      )}
                     </div>
                     
                     <div className="flex flex-col sm:items-end">
