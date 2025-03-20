@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { 
@@ -15,20 +14,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { Badge } from '@/components/ui/badge';
-
-interface OrderItem {
-  id: number;
-  name: string;
-  price: number;
-  salePrice?: number;
-  onSale?: boolean;
-  quantity: number;
-  image: string;
-}
+import { createOrder, OrderItem, clearCart } from '@/utils/orderUtils';
 
 interface LocationState {
   products: OrderItem[];
@@ -42,6 +31,7 @@ const CheckoutPage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState('credit-card');
   const [orderProcessing, setOrderProcessing] = useState(false);
   const [orderCompleted, setOrderCompleted] = useState(false);
+  const [orderId, setOrderId] = useState('');
   
   // Form state
   const [billingInfo, setBillingInfo] = useState({
@@ -85,17 +75,24 @@ const CheckoutPage: React.FC = () => {
     
     setOrderProcessing(true);
     
-    // Simulate order processing
+    // Create an order with our utility function
     setTimeout(() => {
+      const selectedPaymentMethod = paymentMethod === 'credit-card' 
+        ? `Credit Card ending in ${billingInfo.cardNumber.slice(-4)}` 
+        : 'PayPal';
+      
+      const newOrder = createOrder(orderItems, selectedPaymentMethod);
+      setOrderId(newOrder.id);
+      
+      // Clear the cart
+      clearCart();
+      
       setOrderProcessing(false);
       setOrderCompleted(true);
       
-      // Generate random order number
-      const orderNumber = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-      
       toast({
         title: "Order Placed Successfully!",
-        description: `Your order #${orderNumber} has been confirmed.`,
+        description: `Your order #${newOrder.id} has been confirmed.`,
       });
     }, 2000);
   };
@@ -127,10 +124,14 @@ const CheckoutPage: React.FC = () => {
             <div className="p-4 bg-gray-50 rounded-lg">
               <h3 className="font-medium mb-2">Order Details</h3>
               <div className="text-sm text-gray-500 space-y-1">
-                <p>Order Number: <span className="font-medium text-black">#{Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}</span></p>
+                <p>Order Number: <span className="font-medium text-black">#{orderId}</span></p>
                 <p>Date: <span className="font-medium text-black">{new Date().toLocaleDateString()}</span></p>
                 <p>Total: <span className="font-medium text-black">${orderTotal.toFixed(2)}</span></p>
-                <p>Payment Method: <span className="font-medium text-black">{paymentMethod === 'credit-card' ? 'Credit Card' : 'PayPal'}</span></p>
+                <p>Payment Method: <span className="font-medium text-black">
+                  {paymentMethod === 'credit-card' 
+                    ? `Credit Card ending in ${billingInfo.cardNumber.slice(-4)}` 
+                    : 'PayPal'}
+                </span></p>
               </div>
             </div>
             
@@ -169,8 +170,8 @@ const CheckoutPage: React.FC = () => {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button className="w-full" onClick={() => navigate('/customer/orders')}>
-              View My Orders
+            <Button className="w-full" onClick={() => navigate('/customer/history')}>
+              View My Order History
             </Button>
             <Button variant="outline" onClick={() => navigate('/products')}>
               Continue Shopping

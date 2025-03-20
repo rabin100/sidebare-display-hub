@@ -12,7 +12,8 @@ import {
   X,
   Check,
   Plus,
-  Minus
+  Minus,
+  ArrowRight
 } from 'lucide-react';
 import { 
   Select, 
@@ -35,6 +36,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { createOrder, OrderItem } from '@/utils/orderUtils';
 
 const allProducts = [
   {
@@ -232,6 +234,8 @@ const ProductsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<typeof allProducts[0] | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [cart, setCart] = useState<OrderItem[]>([]);
+  const [showCheckoutDialog, setShowCheckoutDialog] = useState(false);
   
   const categories = [...new Set(allProducts.map(p => p.category))];
   const brands = [...new Set(allProducts.map(p => p.brand))];
@@ -275,6 +279,17 @@ const ProductsPage: React.FC = () => {
     setProducts(filteredProducts);
   }, [searchParams]);
   
+  useEffect(() => {
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+  
   const toggleFilter = (type: 'categories' | 'brands', value: string) => {
     setFilters(prev => {
       const currentValues = [...prev[type]];
@@ -309,6 +324,28 @@ const ProductsPage: React.FC = () => {
   const confirmAddToCart = () => {
     if (!selectedProduct) return;
     
+    const productPrice = selectedProduct.onSale ? selectedProduct.salePrice! : selectedProduct.price;
+    
+    const newItem: OrderItem = {
+      id: selectedProduct.id,
+      name: selectedProduct.name,
+      price: selectedProduct.price,
+      salePrice: selectedProduct.salePrice,
+      onSale: selectedProduct.onSale,
+      quantity: quantity,
+      image: selectedProduct.image
+    };
+    
+    const existingItemIndex = cart.findIndex(item => item.id === selectedProduct.id);
+    
+    if (existingItemIndex !== -1) {
+      const updatedCart = [...cart];
+      updatedCart[existingItemIndex].quantity += quantity;
+      setCart(updatedCart);
+    } else {
+      setCart(prev => [...prev, newItem]);
+    }
+    
     toast({
       title: "Added to cart",
       description: `${quantity} x ${selectedProduct.name} has been added to your cart.`,
@@ -316,8 +353,6 @@ const ProductsPage: React.FC = () => {
     
     setSelectedProduct(null);
     setQuantity(1);
-    
-    // In a real app, you would update the cart state/store here
   };
   
   const handleAddToWishlist = (productId: number, productName: string) => {
@@ -330,20 +365,101 @@ const ProductsPage: React.FC = () => {
   const handleBuyNow = (productId: number) => {
     const product = products.find(p => p.id === productId);
     if (product) {
-      // Simulate adding to cart and going to checkout
-      toast({
-        title: "Processing order",
-        description: `Proceeding to checkout with ${product.name}.`,
-      });
+      const newItem: OrderItem = {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        salePrice: product.salePrice,
+        onSale: product.onSale,
+        quantity: 1,
+        image: product.image
+      };
       
-      // Navigate to checkout page
+      setCart([newItem]);
+      
       navigate('/customer/checkout', { 
         state: { 
-          products: [{ ...product, quantity: 1 }],
-          totalAmount: product.onSale ? product.salePrice : product.price 
+          products: [newItem],
+          totalAmount: product.onSale ? product.salePrice! : product.price 
         } 
       });
     }
+  };
+
+  const handleViewCart = () => {
+    setShowCheckoutDialog(true);
+  };
+
+  const handleClearCart = () => {
+    setCart([]);
+    setShowCheckoutDialog(false);
+    toast({
+      title: "Cart cleared",
+      description: "All items have been removed from your cart."
+    });
+  };
+
+  const handleRemoveItem = (productId: number) => {
+    setCart(prev => prev.filter(item => item.id !== productId));
+    toast({
+      title: "Item removed",
+      description: "Item has been removed from your cart."
+    });
+  };
+
+  const handleUpdateQuantity = (productId: number, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    
+    setCart(prev => prev.map(item => 
+      item.id === productId ? { ...item, quantity: newQuantity } : item
+    ));
+  };
+
+  const handleCheckout = () => {
+    if (cart.length === 0) {
+      toast({
+        title: "Cart is empty",
+        description: "Please add items to your cart before checking out.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const totalAmount = cart.reduce(
+      (sum, item) => sum + (item.onSale ? item.salePrice! : item.price) * item.quantity, 
+      0
+    );
+    
+    navigate('/customer/checkout', { 
+      state: { 
+        products: cart,
+        totalAmount: totalAmount
+      }
+    });
+    setShowCheckoutDialog(false);
+  };
+
+  const handlePlaceOrderDirectly = () => {
+    if (cart.length === 0) {
+      toast({
+        title: "Cart is empty",
+        description: "Please add items to your cart before placing an order.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const newOrder = createOrder(cart);
+    
+    setCart([]);
+    setShowCheckoutDialog(false);
+    
+    toast({
+      title: "Order Placed Successfully!",
+      description: `Your order #${newOrder.id} has been confirmed.`,
+    });
+    
+    navigate('/customer/history');
   };
   
   const applyFilters = () => {
@@ -422,6 +538,13 @@ const ProductsPage: React.FC = () => {
     }
   };
 
+  const cartTotal = cart.reduce(
+    (sum, item) => sum + (item.onSale ? item.salePrice! : item.price) * item.quantity, 
+    0
+  );
+  
+  const cartItemCount = cart.reduce((count, item) => count + item.quantity, 0);
+
   return (
     <div className="animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -433,6 +556,17 @@ const ProductsPage: React.FC = () => {
         </div>
         
         <div className="flex flex-wrap items-center gap-3">
+          {cart.length > 0 && (
+            <Button 
+              className="gap-2"
+              onClick={handleViewCart}
+            >
+              <ShoppingCart className="h-4 w-4" />
+              <span>Cart ({cartItemCount})</span>
+              <span className="font-bold">${cartTotal.toFixed(2)}</span>
+            </Button>
+          )}
+          
           <Button 
             variant="outline" 
             size="sm" 
@@ -635,7 +769,6 @@ const ProductsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Product Quick Order Dialog */}
       <Dialog open={!!selectedProduct} onOpenChange={(open) => !open && setSelectedProduct(null)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -707,6 +840,115 @@ const ProductsPage: React.FC = () => {
             <Button onClick={confirmAddToCart}>
               Add to Cart
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showCheckoutDialog} onOpenChange={setShowCheckoutDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Your Shopping Cart</DialogTitle>
+            <DialogDescription>
+              Review your items before checkout
+            </DialogDescription>
+          </DialogHeader>
+
+          {cart.length > 0 ? (
+            <div className="py-4">
+              <div className="max-h-[300px] overflow-y-auto space-y-4 pr-2">
+                {cart.map((item) => (
+                  <div key={item.id} className="flex items-center gap-3 border-b pb-3">
+                    <img 
+                      src={item.image} 
+                      alt={item.name} 
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <h3 className="font-medium text-sm">{item.name}</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        {item.onSale ? (
+                          <>
+                            <span className="font-semibold text-sm">${item.salePrice}</span>
+                            <span className="text-gray-500 line-through text-xs">${item.price}</span>
+                          </>
+                        ) : (
+                          <span className="font-semibold text-sm">${item.price}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center mt-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 w-7 p-0"
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                          disabled={item.quantity <= 1}
+                        >
+                          <Minus className="h-3 w-3" />
+                        </Button>
+                        <span className="mx-2 w-6 text-center text-sm">{item.quantity}</span>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="h-7 w-7 p-0"
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                        >
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">
+                        ${((item.onSale ? item.salePrice! : item.price) * item.quantity).toFixed(2)}
+                      </p>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 p-0 mt-1 text-red-500 hover:text-red-700"
+                        onClick={() => handleRemoveItem(item.id)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-4 pt-4 border-t">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Subtotal:</span>
+                  <span className="font-bold text-lg">${cartTotal.toFixed(2)}</span>
+                </div>
+                <p className="text-sm text-gray-500 mt-1">
+                  Taxes and shipping calculated at checkout
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="py-8 text-center">
+              <ShoppingCart className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+              <p className="text-gray-500">Your cart is empty</p>
+            </div>
+          )}
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            {cart.length > 0 && (
+              <>
+                <Button variant="outline" onClick={handleClearCart} className="sm:mr-auto">
+                  Clear Cart
+                </Button>
+                <Button variant="outline" onClick={handlePlaceOrderDirectly}>
+                  Place Order
+                </Button>
+                <Button onClick={handleCheckout}>
+                  Checkout <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </>
+            )}
+            {cart.length === 0 && (
+              <Button onClick={() => setShowCheckoutDialog(false)}>
+                Continue Shopping
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

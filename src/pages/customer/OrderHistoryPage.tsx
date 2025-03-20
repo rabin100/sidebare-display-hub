@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,99 +33,24 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
-
-interface Order {
-  id: string;
-  date: string;
-  items: number;
-  total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  paymentMethod: string;
-}
+import { getOrders, Order } from '@/utils/orderUtils';
+import { useToast } from '@/components/ui/use-toast';
 
 const OrderHistoryPage: React.FC = () => {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to?: Date }>({
     from: undefined
   });
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [orders, setOrders] = useState<Order[]>([]);
   
-  const orders: Order[] = [
-    {
-      id: "ORD-1234",
-      date: "2023-06-15",
-      items: 1,
-      total: 129.99,
-      status: "delivered",
-      paymentMethod: "Credit Card",
-    },
-    {
-      id: "ORD-1235",
-      date: "2023-06-02",
-      items: 2,
-      total: 289.98,
-      status: "delivered",
-      paymentMethod: "PayPal",
-    },
-    {
-      id: "ORD-1236",
-      date: "2023-05-28",
-      items: 1,
-      total: 79.99,
-      status: "delivered",
-      paymentMethod: "Credit Card",
-    },
-    {
-      id: "ORD-1237",
-      date: "2023-05-20",
-      items: 1,
-      total: 129.99,
-      status: "cancelled",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      id: "ORD-1238",
-      date: "2023-05-10",
-      items: 3,
-      total: 349.97,
-      status: "delivered",
-      paymentMethod: "Credit Card",
-    },
-    {
-      id: "ORD-1239",
-      date: "2023-04-25",
-      items: 2,
-      total: 159.98,
-      status: "delivered",
-      paymentMethod: "PayPal",
-    },
-    {
-      id: "ORD-1240",
-      date: "2023-04-15",
-      items: 1,
-      total: 49.99,
-      status: "delivered",
-      paymentMethod: "Credit Card",
-    },
-    {
-      id: "ORD-1241",
-      date: "2023-04-05",
-      items: 4,
-      total: 399.96,
-      status: "delivered",
-      paymentMethod: "Credit Card",
-    },
-    {
-      id: "ORD-1242",
-      date: "2023-03-20",
-      items: 1,
-      total: 199.99,
-      status: "delivered",
-      paymentMethod: "PayPal",
-    },
-  ];
-
+  // Load orders from localStorage on component mount
+  useEffect(() => {
+    setOrders(getOrders());
+  }, []);
+  
   let filteredOrders = [...orders];
   
   if (searchTerm) {
@@ -166,8 +92,34 @@ const OrderHistoryPage: React.FC = () => {
   });
 
   const handleExportHistory = () => {
-    console.log('Exporting order history...');
-    alert('Order history export started. Your file will be ready to download shortly.');
+    try {
+      // Create CSV content
+      const headers = "Order ID,Date,Items,Total,Status,Payment Method\n";
+      const csvContent = orders.reduce((acc, order) => {
+        return acc + `${order.id},${order.date},${order.items.length},$${order.total.toFixed(2)},${order.status},${order.paymentMethod}\n`;
+      }, headers);
+      
+      // Create blob and download link
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'order_history.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({
+        title: "Export Successful",
+        description: "Your order history has been exported as CSV."
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "There was an error exporting your order history.",
+        variant: "destructive"
+      });
+    }
   };
   
   const handleClearFilters = () => {
@@ -310,7 +262,7 @@ const OrderHistoryPage: React.FC = () => {
                   <TableRow key={order.id}>
                     <TableCell className="font-medium">{order.id}</TableCell>
                     <TableCell>{order.date}</TableCell>
-                    <TableCell>{order.items}</TableCell>
+                    <TableCell>{order.items.length}</TableCell>
                     <TableCell>${order.total.toFixed(2)}</TableCell>
                     <TableCell>{getStatusBadge(order.status)}</TableCell>
                     <TableCell>{order.paymentMethod}</TableCell>
