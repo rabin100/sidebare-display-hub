@@ -18,6 +18,7 @@ export interface Order {
   total: number;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   paymentMethod: string;
+  paymentStatus: 'unpaid' | 'paid' | 'refunded';
 }
 
 // Get orders from localStorage
@@ -46,7 +47,8 @@ export const createOrder = (items: OrderItem[], paymentMethod: string = 'Credit 
     items,
     total,
     status: 'pending', // Initial status
-    paymentMethod
+    paymentMethod,
+    paymentStatus: 'unpaid' // Initial payment status
   };
   
   // Retrieve current orders
@@ -80,6 +82,39 @@ export const updateOrderStatus = (orderId: string, status: Order['status']): boo
   if (orderIndex === -1) return false;
   
   orders[orderIndex].status = status;
+  saveOrders(orders);
+  return true;
+};
+
+// Update payment status
+export const updatePaymentStatus = (orderId: string, paymentStatus: Order['paymentStatus']): boolean => {
+  const orders = getOrders();
+  const orderIndex = orders.findIndex(order => order.id === orderId);
+  
+  if (orderIndex === -1) return false;
+  
+  orders[orderIndex].paymentStatus = paymentStatus;
+  
+  // If payment is marked as paid, automatically update order status to processing
+  if (paymentStatus === 'paid' && orders[orderIndex].status === 'pending') {
+    orders[orderIndex].status = 'processing';
+  }
+  
+  saveOrders(orders);
+  return true;
+};
+
+// Process payment for an order
+export const processPayment = (orderId: string, paymentMethod: string): boolean => {
+  const orders = getOrders();
+  const orderIndex = orders.findIndex(order => order.id === orderId);
+  
+  if (orderIndex === -1) return false;
+  
+  orders[orderIndex].paymentStatus = 'paid';
+  orders[orderIndex].status = 'processing';
+  orders[orderIndex].paymentMethod = paymentMethod;
+  
   saveOrders(orders);
   return true;
 };

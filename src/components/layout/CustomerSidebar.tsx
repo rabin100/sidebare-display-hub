@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
   ShoppingBag, 
-  Clock, 
+  History, 
   CreditCard, 
   MessageSquare, 
   Search, 
@@ -53,10 +53,10 @@ const CustomerSidebar: React.FC<CustomerSidebarProps> = ({ className }) => {
           {[
             { path: "/customer", icon: UserCircle, label: "Dashboard" },
             { path: "/customer/orders", icon: ShoppingBag, label: "My Orders" },
-            { path: "/customer/order-history", icon: Clock, label: "Order History" },
+            { path: "/customer/history", icon: History, label: "Order History" },
             { path: "/customer/payments", icon: CreditCard, label: "Payments" },
             { path: "/customer/feedback", icon: MessageSquare, label: "Feedback" },
-            { path: "/customer/browse-products", icon: Search, label: "Browse Products" },
+            { path: "/customer/browse", icon: Search, label: "Browse Products" },
             { path: "/customer/settings", icon: Settings, label: "Account Settings" },
           ].map((item) => (
             <li key={item.path}>

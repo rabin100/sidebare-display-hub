@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, User } from 'lucide-react';
+import { Search, User, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
@@ -55,13 +55,15 @@ const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 mt-1 bg-white">
             <DropdownMenuItem asChild className="cursor-pointer">
-              <Link to="/login" className="flex items-center">
-                <span>Login</span>
+              <Link to="/customer/settings" className="flex items-center">
+                <User className="mr-2 h-4 w-4" />
+                <span>Edit Profile</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild className="cursor-pointer">
-              <Link to="/signup" className="flex items-center">
-                <span>Sign Up</span>
+              <Link to="/login" className="flex items-center">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Logout</span>
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>

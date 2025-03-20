@@ -17,7 +17,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { Badge } from '@/components/ui/badge';
-import { createOrder, OrderItem, clearCart } from '@/utils/orderUtils';
+import { createOrder, OrderItem, clearCart, processPayment } from '@/utils/orderUtils';
 
 interface LocationState {
   products: OrderItem[];
@@ -33,7 +33,6 @@ const CheckoutPage: React.FC = () => {
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [orderId, setOrderId] = useState('');
   
-  // Form state
   const [billingInfo, setBillingInfo] = useState({
     fullName: '',
     email: '',
@@ -47,7 +46,6 @@ const CheckoutPage: React.FC = () => {
     cvv: '',
   });
   
-  // Get products from location state or use empty array as fallback
   const orderItems: OrderItem[] = (location.state as LocationState)?.products || [];
   const orderTotal = (location.state as LocationState)?.totalAmount || 
     orderItems.reduce((sum, item) => 
@@ -75,7 +73,6 @@ const CheckoutPage: React.FC = () => {
     
     setOrderProcessing(true);
     
-    // Create an order with our utility function
     setTimeout(() => {
       const selectedPaymentMethod = paymentMethod === 'credit-card' 
         ? `Credit Card ending in ${billingInfo.cardNumber.slice(-4)}` 
@@ -84,7 +81,8 @@ const CheckoutPage: React.FC = () => {
       const newOrder = createOrder(orderItems, selectedPaymentMethod);
       setOrderId(newOrder.id);
       
-      // Clear the cart
+      processPayment(newOrder.id, selectedPaymentMethod);
+      
       clearCart();
       
       setOrderProcessing(false);
@@ -92,7 +90,7 @@ const CheckoutPage: React.FC = () => {
       
       toast({
         title: "Order Placed Successfully!",
-        description: `Your order #${newOrder.id} has been confirmed.`,
+        description: `Your order #${newOrder.id} has been confirmed and payment processed.`,
       });
     }, 2000);
   };
@@ -117,7 +115,7 @@ const CheckoutPage: React.FC = () => {
             </div>
             <CardTitle className="text-2xl">Order Confirmed!</CardTitle>
             <CardDescription>
-              Your order has been placed and is being processed
+              Your order has been placed and payment has been processed
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -132,6 +130,7 @@ const CheckoutPage: React.FC = () => {
                     ? `Credit Card ending in ${billingInfo.cardNumber.slice(-4)}` 
                     : 'PayPal'}
                 </span></p>
+                <p>Payment Status: <span className="font-medium text-green-600">Paid</span></p>
               </div>
             </div>
             
@@ -423,7 +422,7 @@ const CheckoutPage: React.FC = () => {
                 onClick={handleSubmitOrder}
                 disabled={orderProcessing || orderItems.length === 0}
               >
-                {orderProcessing ? "Processing..." : "Place Order"}
+                {orderProcessing ? "Processing..." : "Place Order & Pay Now"}
               </Button>
             </CardFooter>
           </Card>
