@@ -25,12 +25,16 @@ import WishlistPage from './pages/ecommerce/WishlistPage';
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
 import AccountRequests from './pages/admin/AccountRequests';
+import Analytics from './pages/admin/Analytics';
+import Reports from './pages/admin/Reports';
+import AccountManagement from './pages/admin/AccountManagement';
+import Profile from './pages/admin/Profile';
 
 // Manager Pages
 import InventoryManagement from './pages/manager/InventoryManagement';
 import PriceManagement from './pages/manager/PriceManagement';
 import Transactions from './pages/manager/Transactions';
-import Reports from './pages/manager/Reports';
+import ManagerReports from './pages/manager/Reports';
 
 // Customer Pages
 import CustomerDashboard from './pages/customer/CustomerDashboard';
@@ -86,6 +90,10 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <AdminDashboard /> },
       { path: 'account-requests', element: <AccountRequests /> },
+      { path: 'analytics', element: <Analytics /> },
+      { path: 'reports', element: <Reports /> },
+      { path: 'account-management', element: <AccountManagement /> },
+      { path: 'profile', element: <Profile /> },
     ],
   },
   {
@@ -95,7 +103,8 @@ const router = createBrowserRouter([
       { index: true, element: <InventoryManagement /> },
       { path: 'price-management', element: <PriceManagement /> },
       { path: 'transactions', element: <Transactions /> },
-      { path: 'reports', element: <Reports /> },
+      { path: 'reports', element: <ManagerReports /> },
+      { path: 'profile', element: <Profile /> },
     ],
   },
   {

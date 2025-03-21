@@ -13,7 +13,8 @@ import {
   ShoppingCart, 
   Tag, 
   Package, 
-  CreditCard 
+  CreditCard,
+  UserPlus
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -65,6 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           {isAdmin && [
             { path: "/admin", icon: LayoutDashboard, label: "Dashboard" },
             { path: "/admin/account-requests", icon: Users, label: "Account Requests" },
+            { path: "/admin/account-management", icon: UserPlus, label: "Account Management" },
             { path: "/admin/analytics", icon: BarChart3, label: "Analytics" },
             { path: "/admin/reports", icon: FileText, label: "Reports" },
           ].map((item) => (
@@ -112,7 +114,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         <div className="mt-auto">
           <div className="border-t border-admin-border pt-4 mt-4 px-2">
             <NavLink 
-              to={isAdmin ? "/admin/settings" : isManager ? "/manager/settings" : "/settings"}
+              to={isAdmin ? "/admin/profile" : isManager ? "/manager/profile" : "/settings"}
               className={({ isActive }) => cn(
                 "flex items-center gap-3 px-3 py-2 rounded-md premium-transition",
                 collapsed ? "justify-center" : "",
@@ -122,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               )}
             >
               <Settings className={cn("h-5 w-5", collapsed ? "" : "min-w-5")} />
-              {!collapsed && <span className="truncate">Settings</span>}
+              {!collapsed && <span className="truncate">Profile</span>}
             </NavLink>
           </div>
         </div>

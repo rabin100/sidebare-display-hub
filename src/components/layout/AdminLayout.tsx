@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, Link } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import AdminHeader from './AdminHeader';
 import { 
@@ -21,6 +21,7 @@ const AdminLayout: React.FC = () => {
   
   const handleLogout = () => {
     // In a real app, this would clear authentication tokens/cookies
+    localStorage.removeItem('currentUser');
     toast({
       title: "Logged out",
       description: "You have been successfully logged out."
@@ -45,9 +46,11 @@ const AdminLayout: React.FC = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                <User className="mr-2 h-4 w-4" />
-                <span>Edit Profile</span>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link to="/admin/profile">
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Edit Profile</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
