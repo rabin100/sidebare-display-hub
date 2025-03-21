@@ -96,7 +96,7 @@ const InventoryManagement: React.FC = () => {
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (product.sku && product.sku.toLowerCase().includes(searchTerm.toLowerCase())) ||
       product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -127,8 +127,8 @@ const InventoryManagement: React.FC = () => {
   };
 
   // Function to determine stock status and styling
-  const getStockStatus = (stock: number) => {
-    if (stock <= 5) {
+  const getStockStatus = (stock: number | undefined) => {
+    if (!stock || stock <= 5) {
       return {
         label: "Low",
         className: "text-red-600 bg-red-100 border-red-200"
@@ -196,15 +196,15 @@ const InventoryManagement: React.FC = () => {
                   return (
                     <TableRow key={product.id}>
                       <TableCell className="font-medium">{product.name}</TableCell>
-                      <TableCell>{product.sku}</TableCell>
+                      <TableCell>{product.sku || 'N/A'}</TableCell>
                       <TableCell>{product.category}</TableCell>
                       <TableCell>${product.price.toFixed(2)}</TableCell>
                       <TableCell>
                         <div className="flex items-center">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${stockStatus.className}`}>
-                            {product.stock} - {stockStatus.label}
+                            {product.stock || 0} - {stockStatus.label}
                           </span>
-                          {product.stock <= 5 && (
+                          {(!product.stock || product.stock <= 5) && (
                             <AlertTriangle className="h-4 w-4 ml-2 text-yellow-500" />
                           )}
                         </div>
@@ -247,15 +247,15 @@ const InventoryManagement: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-green-50 p-4 rounded-lg border border-green-100">
               <div className="text-green-600 text-sm font-medium mb-1">In Stock</div>
-              <div className="text-2xl font-bold">{products.filter(p => p.stock > 5).length} Products</div>
+              <div className="text-2xl font-bold">{products.filter(p => p.stock && p.stock > 5).length} Products</div>
             </div>
             <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
               <div className="text-yellow-600 text-sm font-medium mb-1">Low Stock</div>
-              <div className="text-2xl font-bold">{products.filter(p => p.stock > 0 && p.stock <= 5).length} Products</div>
+              <div className="text-2xl font-bold">{products.filter(p => p.stock !== undefined && p.stock > 0 && p.stock <= 5).length} Products</div>
             </div>
             <div className="bg-red-50 p-4 rounded-lg border border-red-100">
               <div className="text-red-600 text-sm font-medium mb-1">Out of Stock</div>
-              <div className="text-2xl font-bold">{products.filter(p => p.stock === 0).length} Products</div>
+              <div className="text-2xl font-bold">{products.filter(p => !p.stock || p.stock === 0).length} Products</div>
             </div>
           </div>
         </CardContent>

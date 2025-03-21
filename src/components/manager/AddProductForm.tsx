@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,11 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { getCategories, getBrands } from '@/types/product';
+import { getCategories, getBrands, Product } from '@/types/product';
 import { PlusCircle } from 'lucide-react';
 
 interface AddProductFormProps {
-  onProductAdded: (product: any) => void;
+  onProductAdded: (product: Product) => void;
 }
 
 const AddProductForm: React.FC<AddProductFormProps> = ({ onProductAdded }) => {
@@ -51,15 +50,15 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductAdded }) => {
       return;
     }
     
-    // Create product object
-    const product = {
-      id: Date.now().toString(),
+    // Create product object with correct types
+    const product: Product = {
+      id: Date.now(),
       name: newProduct.name,
       description: newProduct.description,
       category: newProduct.category,
       brand: newProduct.brand || 'Generic',
       price: parseFloat(newProduct.price),
-      stock: parseInt(newProduct.stock) || 0,
+      stock: newProduct.stock ? parseInt(newProduct.stock) : undefined,
       sku: newProduct.sku || `SKU-${Date.now()}`,
       image: newProduct.image || 'https://images.unsplash.com/photo-1592150621744-aca64f48394a',
       rating: 0,

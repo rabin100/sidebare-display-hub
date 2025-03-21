@@ -1,3 +1,4 @@
+
 export interface Product {
   id: number;
   name: string;
@@ -9,6 +10,9 @@ export interface Product {
   salePrice?: number;
   category: string;
   brand: string;
+  description?: string;
+  stock?: number;
+  sku?: string;
 }
 
 export const allProducts: Product[] = [
