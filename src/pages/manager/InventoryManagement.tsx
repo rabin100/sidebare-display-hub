@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { 
   Table, 
   TableBody, 
@@ -18,67 +17,79 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
-import { Search, Package, Edit, Trash, PlusCircle, AlertTriangle } from 'lucide-react';
+import { Search, Edit, Trash, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  stock: number;
-  sku: string;
-}
+import AddProductForm from '@/components/manager/AddProductForm';
+import { Product } from '@/types/product';
 
 const InventoryManagement: React.FC = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [products, setProducts] = useState<Product[]>([
     {
-      id: '1',
+      id: 1,
       name: 'Product 1',
       description: 'This is a description for Product 1',
       category: 'Electronics',
       price: 199.99,
       stock: 45,
-      sku: 'ELEC-001'
+      sku: 'ELEC-001',
+      image: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9',
+      rating: 4.5,
+      ratingCount: 156,
+      brand: 'TechPro'
     },
     {
-      id: '2',
+      id: 2,
       name: 'Product 2',
       description: 'This is a description for Product 2',
       category: 'Clothing',
       price: 39.99,
       stock: 78,
-      sku: 'CLTH-002'
+      sku: 'CLTH-002',
+      image: 'https://images.unsplash.com/photo-1588286840104-8957b019727f',
+      rating: 4.2,
+      ratingCount: 78,
+      brand: 'UrbanStyle'
     },
     {
-      id: '3',
+      id: 3,
       name: 'Product 3',
       description: 'This is a description for Product 3',
       category: 'Home & Kitchen',
       price: 59.99,
       stock: 12,
-      sku: 'HOME-003'
+      sku: 'HOME-003',
+      image: 'https://images.unsplash.com/photo-1592150621744-aca64f48394a',
+      rating: 4.7,
+      ratingCount: 203,
+      brand: 'HomeChef'
     },
     {
-      id: '4',
+      id: 4,
       name: 'Product 4',
       description: 'This is a description for Product 4',
       category: 'Electronics',
       price: 299.99,
       stock: 30,
-      sku: 'ELEC-004'
+      sku: 'ELEC-004',
+      image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b',
+      rating: 4.8,
+      ratingCount: 412,
+      brand: 'TechPro'
     },
     {
-      id: '5',
+      id: 5,
       name: 'Product 5',
       description: 'This is a description for Product 5',
       category: 'Books',
       price: 19.99,
       stock: 5,
-      sku: 'BOOK-005'
+      sku: 'BOOK-005',
+      image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27',
+      rating: 4.3,
+      ratingCount: 89,
+      brand: 'ArtVibe'
     }
   ]);
 
@@ -89,31 +100,29 @@ const InventoryManagement: React.FC = () => {
       product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEditProduct = (id: string) => {
-    console.log(`Editing product ${id}`);
+  const handleAddProduct = (newProduct: Product) => {
+    setProducts([...products, newProduct]);
+  };
+
+  const handleEditProduct = (id: number | string) => {
+    const numericId = typeof id === 'string' ? parseInt(id) : id;
+    console.log(`Editing product ${numericId}`);
     toast({
       title: "Edit Product",
-      description: `Editing details for product ${id}`,
+      description: `Editing details for product ${numericId}`,
     });
   };
 
-  const handleDeleteProduct = (id: string) => {
-    console.log(`Deleting product ${id}`);
+  const handleDeleteProduct = (id: number | string) => {
+    const numericId = typeof id === 'string' ? parseInt(id) : id;
+    console.log(`Deleting product ${numericId}`);
     
     // For demo purposes, just remove from the local state
-    setProducts(products.filter(product => product.id !== id));
+    setProducts(products.filter(product => product.id !== numericId));
     
     toast({
       title: "Product Deleted",
       description: "The product has been removed from inventory",
-    });
-  };
-
-  const handleAddProduct = () => {
-    console.log('Adding new product');
-    toast({
-      title: "Add Product",
-      description: "Opening product creation form",
     });
   };
 
@@ -141,11 +150,9 @@ const InventoryManagement: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Inventory Management</h1>
-        <Button onClick={handleAddProduct}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add Product
-        </Button>
       </div>
+      
+      <AddProductForm onProductAdded={handleAddProduct} />
       
       <div className="flex w-full max-w-sm items-center space-x-2 mb-4">
         <Input

@@ -110,24 +110,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             </li>
           ))}
         </ul>
-        
-        <div className="mt-auto">
-          <div className="border-t border-admin-border pt-4 mt-4 px-2">
-            <NavLink 
-              to={isAdmin ? "/admin/profile" : isManager ? "/manager/profile" : "/settings"}
-              className={({ isActive }) => cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md premium-transition",
-                collapsed ? "justify-center" : "",
-                isActive 
-                  ? "bg-admin-accent text-admin-primary font-medium" 
-                  : "text-admin-secondary hover:bg-admin-accent/60"
-              )}
-            >
-              <Settings className={cn("h-5 w-5", collapsed ? "" : "min-w-5")} />
-              {!collapsed && <span className="truncate">Profile</span>}
-            </NavLink>
-          </div>
-        </div>
       </nav>
     </aside>
   );
