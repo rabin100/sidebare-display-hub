@@ -88,8 +88,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           ))}
 
           {isManager && [
-            { path: "/manager/inventory", icon: Package, label: "Inventory" },
-            { path: "/manager/pricing", icon: Tag, label: "Pricing" },
+            { path: "/manager", icon: Package, label: "Inventory" },
+            { path: "/manager/price-management", icon: Tag, label: "Pricing" },
             { path: "/manager/reports", icon: BarChart3, label: "Reports" },
             { path: "/manager/transactions", icon: CreditCard, label: "Transactions" },
           ].map((item) => (

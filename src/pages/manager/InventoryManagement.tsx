@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -10,14 +10,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { 
   Table, 
   TableBody, 
@@ -26,330 +18,204 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
-import { Plus, Edit, Trash, Tag, Upload, Image } from 'lucide-react';
+import { Search, Package, Edit, Trash, PlusCircle, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-interface Item {
+interface Product {
   id: string;
   name: string;
   description: string;
+  category: string;
   price: number;
   stock: number;
-  image: string;
-  category: string;
+  sku: string;
 }
-
-const categories = [
-  "Electronics",
-  "Clothing",
-  "Home & Kitchen",
-  "Books",
-  "Toys & Games",
-  "Beauty & Personal Care",
-  "Sports & Outdoors",
-  "Other"
-];
 
 const InventoryManagement: React.FC = () => {
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [items, setItems] = useState<Item[]>([
+  const [searchTerm, setSearchTerm] = useState('');
+  const [products, setProducts] = useState<Product[]>([
     {
       id: '1',
       name: 'Product 1',
-      description: 'This is a sample product',
-      price: 19.99,
-      stock: 50,
-      image: '/placeholder.svg',
-      category: 'Electronics'
+      description: 'This is a description for Product 1',
+      category: 'Electronics',
+      price: 199.99,
+      stock: 45,
+      sku: 'ELEC-001'
     },
     {
       id: '2',
       name: 'Product 2',
-      description: 'Another sample product',
-      price: 29.99,
+      description: 'This is a description for Product 2',
+      category: 'Clothing',
+      price: 39.99,
+      stock: 78,
+      sku: 'CLTH-002'
+    },
+    {
+      id: '3',
+      name: 'Product 3',
+      description: 'This is a description for Product 3',
+      category: 'Home & Kitchen',
+      price: 59.99,
+      stock: 12,
+      sku: 'HOME-003'
+    },
+    {
+      id: '4',
+      name: 'Product 4',
+      description: 'This is a description for Product 4',
+      category: 'Electronics',
+      price: 299.99,
       stock: 30,
-      image: '/placeholder.svg',
-      category: 'Clothing'
+      sku: 'ELEC-004'
+    },
+    {
+      id: '5',
+      name: 'Product 5',
+      description: 'This is a description for Product 5',
+      category: 'Books',
+      price: 19.99,
+      stock: 5,
+      sku: 'BOOK-005'
     }
   ]);
-  
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    stock: '',
-    image: '',
-    category: ''
-  });
-  
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-  
-  const handleCategoryChange = (value: string) => {
-    setFormData({
-      ...formData,
-      category: value
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleEditProduct = (id: string) => {
+    console.log(`Editing product ${id}`);
+    toast({
+      title: "Edit Product",
+      description: `Editing details for product ${id}`,
     });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Create a preview URL for the image
-      const imageUrl = URL.createObjectURL(file);
-      setPreviewImage(imageUrl);
-      
-      // In a real app, you would upload this to a server and get back a URL
-      // For now, we'll just use the local preview URL
-      setFormData({
-        ...formData,
-        image: imageUrl
-      });
-      
-      toast({
-        title: "Image Uploaded",
-        description: `${file.name} has been selected.`,
-      });
-    }
-  };
-  
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleDeleteProduct = (id: string) => {
+    console.log(`Deleting product ${id}`);
     
-    if (!formData.category) {
-      toast({
-        title: "Error",
-        description: "Please select a category for the item.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    const newItem: Item = {
-      id: Date.now().toString(),
-      name: formData.name,
-      description: formData.description,
-      price: parseFloat(formData.price),
-      stock: parseInt(formData.stock),
-      image: formData.image || '/placeholder.svg',
-      category: formData.category
-    };
-    
-    setItems([...items, newItem]);
-    setFormData({
-      name: '',
-      description: '',
-      price: '',
-      stock: '',
-      image: '',
-      category: ''
-    });
-    setPreviewImage(null);
+    // For demo purposes, just remove from the local state
+    setProducts(products.filter(product => product.id !== id));
     
     toast({
-      title: "Item Added",
-      description: `${newItem.name} has been added to inventory.`,
+      title: "Product Deleted",
+      description: "The product has been removed from inventory",
     });
   };
 
-  const handleDelete = (id: string) => {
-    setItems(items.filter(item => item.id !== id));
+  const handleAddProduct = () => {
+    console.log('Adding new product');
     toast({
-      title: "Item Deleted",
-      description: "The item has been removed from inventory.",
+      title: "Add Product",
+      description: "Opening product creation form",
     });
+  };
+
+  // Function to determine stock status and styling
+  const getStockStatus = (stock: number) => {
+    if (stock <= 5) {
+      return {
+        label: "Low",
+        className: "text-red-600 bg-red-100 border-red-200"
+      };
+    } else if (stock <= 20) {
+      return {
+        label: "Medium",
+        className: "text-yellow-600 bg-yellow-100 border-yellow-200"
+      };
+    } else {
+      return {
+        label: "Good",
+        className: "text-green-600 bg-green-100 border-green-200"
+      };
+    }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Inventory Management</h1>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New Item
+        <Button onClick={handleAddProduct}>
+          <PlusCircle className="mr-2 h-4 w-4" />
+          Add Product
         </Button>
       </div>
       
-      <div className="grid md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Add New Item</CardTitle>
-            <CardDescription>Enter details to add a new product to your inventory.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Product Name</Label>
-                <Input
-                  id="name"
-                  name="name" 
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Select 
-                  value={formData.category} 
-                  onValueChange={handleCategoryChange}
-                  required
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows={3}
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="price">Price ($)</Label>
-                  <Input
-                    id="price"
-                    name="price"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="stock">Stock</Label>
-                  <Input
-                    id="stock"
-                    name="stock"
-                    type="number"
-                    min="0"
-                    value={formData.stock}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="image">Product Image</Label>
-                <div className="flex flex-col items-center space-y-4">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    id="image-upload"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
-                  
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={triggerFileInput}
-                    className="w-full"
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    Upload Image
-                  </Button>
-                  
-                  {previewImage && (
-                    <div className="mt-4 border rounded-md overflow-hidden w-full max-w-[200px] h-[150px] relative">
-                      <img 
-                        src={previewImage} 
-                        alt="Preview" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              <Button type="submit" className="w-full">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Product
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Current Inventory</CardTitle>
-            <CardDescription>Manage your existing inventory items.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="max-h-[500px] overflow-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Stock</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {items.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded overflow-hidden bg-gray-100 flex-shrink-0">
-                          <img 
-                            src={item.image} 
-                            alt={item.name} 
-                            className="w-full h-full object-cover"
-                          />
+      <div className="flex w-full max-w-sm items-center space-x-2 mb-4">
+        <Input
+          type="search"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full"
+        />
+        <Button type="submit" variant="secondary">
+          <Search className="h-4 w-4" />
+          <span className="sr-only">Search</span>
+        </Button>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Products Inventory</CardTitle>
+          <CardDescription>Manage your product inventory and stock levels.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-4 text-gray-500">
+              No products found matching your search.
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Product Name</TableHead>
+                  <TableHead>SKU</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Stock</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredProducts.map((product) => {
+                  const stockStatus = getStockStatus(product.stock);
+                  return (
+                    <TableRow key={product.id}>
+                      <TableCell className="font-medium">{product.name}</TableCell>
+                      <TableCell>{product.sku}</TableCell>
+                      <TableCell>{product.category}</TableCell>
+                      <TableCell>${product.price.toFixed(2)}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${stockStatus.className}`}>
+                            {product.stock} - {stockStatus.label}
+                          </span>
+                          {product.stock <= 5 && (
+                            <AlertTriangle className="h-4 w-4 ml-2 text-yellow-500" />
+                          )}
                         </div>
-                        <span>{item.name}</span>
                       </TableCell>
-                      <TableCell>{item.category}</TableCell>
-                      <TableCell>${item.price.toFixed(2)}</TableCell>
-                      <TableCell>{item.stock}</TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleEditProduct(product.id)}
+                          >
                             <Edit className="h-4 w-4" />
                             <span className="sr-only">Edit</span>
                           </Button>
-                          <Button variant="outline" size="sm">
-                            <Tag className="h-4 w-4" />
-                            <span className="sr-only">Price</span>
-                          </Button>
                           <Button 
                             variant="outline" 
-                            size="sm" 
-                            onClick={() => handleDelete(item.id)}
+                            size="sm"
+                            onClick={() => handleDeleteProduct(product.id)}
                           >
                             <Trash className="h-4 w-4" />
                             <span className="sr-only">Delete</span>
@@ -357,13 +223,36 @@ const InventoryManagement: React.FC = () => {
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Inventory Stats</CardTitle>
+          <CardDescription>Quick overview of your inventory status</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+              <div className="text-green-600 text-sm font-medium mb-1">In Stock</div>
+              <div className="text-2xl font-bold">{products.filter(p => p.stock > 5).length} Products</div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+              <div className="text-yellow-600 text-sm font-medium mb-1">Low Stock</div>
+              <div className="text-2xl font-bold">{products.filter(p => p.stock > 0 && p.stock <= 5).length} Products</div>
+            </div>
+            <div className="bg-red-50 p-4 rounded-lg border border-red-100">
+              <div className="text-red-600 text-sm font-medium mb-1">Out of Stock</div>
+              <div className="text-2xl font-bold">{products.filter(p => p.stock === 0).length} Products</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
