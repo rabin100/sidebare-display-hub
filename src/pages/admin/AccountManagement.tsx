@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   User, 
@@ -83,13 +82,13 @@ const AccountManagement: React.FC = () => {
       return;
     }
     
-    // Create new user
+    // Create new user with explicit status type
     const newUser: User = {
       id: Date.now().toString(),
       name: formData.name,
       email: formData.email,
       role: formData.role as 'manager' | 'finance',
-      status: 'active',
+      status: 'active', // Explicitly setting as 'active', which is one of the allowed values
       createdAt: new Date().toISOString(),
     };
     
@@ -123,7 +122,8 @@ const AccountManagement: React.FC = () => {
   const toggleUserStatus = (userId: string) => {
     const updatedUsers = users.map(user => {
       if (user.id === userId) {
-        const newStatus = user.status === 'active' ? 'inactive' : 'active';
+        // Explicitly type the new status to ensure it's one of the allowed values
+        const newStatus: 'active' | 'inactive' = user.status === 'active' ? 'inactive' : 'active';
         return { ...user, status: newStatus };
       }
       return user;
