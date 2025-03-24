@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './App.css';
@@ -44,7 +43,6 @@ import OrderHistoryPage from './pages/customer/OrderHistoryPage';
 import PaymentsPage from './pages/customer/PaymentsPage';
 import FeedbackPage from './pages/customer/FeedbackPage';
 import SettingsPage from './pages/customer/SettingsPage';
-import BrowseProductsPage from './pages/customer/BrowseProductsPage';
 import CheckoutPage from './pages/customer/CheckoutPage';
 
 // Finance Pages
@@ -118,7 +116,6 @@ const router = createBrowserRouter([
       { path: 'payments', element: <PaymentsPage /> },
       { path: 'feedback', element: <FeedbackPage /> },
       { path: 'settings', element: <SettingsPage /> },
-      { path: 'browse', element: <BrowseProductsPage /> },
       { path: 'checkout', element: <CheckoutPage /> },
     ],
   },

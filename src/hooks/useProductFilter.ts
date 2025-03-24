@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Product, allProducts, getCategories, getBrands } from '@/types/product';
@@ -16,7 +15,9 @@ interface Filters {
 
 export const useProductFilter = () => {
   const [searchParams] = useSearchParams();
-  const [products, setProducts] = useState<Product[]>(allProducts);
+  const [products, setProducts] = useState<Product[]>(
+    allProducts.filter(p => p.category === 'Electronics')
+  );
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState<PriceRange>({ min: '', max: '' });
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,7 +26,7 @@ export const useProductFilter = () => {
   const brands = getBrands();
   
   const [filters, setFilters] = useState<Filters>({
-    categories: [],
+    categories: ['Electronics'],
     brands: [],
     onSale: false,
   });

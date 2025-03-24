@@ -1,5 +1,5 @@
-
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Filter, ShoppingCart } from 'lucide-react';
 import { 
@@ -9,7 +9,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/hooks/useCart';
 import { useProductFilter } from '@/hooks/useProductFilter';
 import ProductCard from '@/components/ecommerce/ProductCard';
@@ -20,6 +20,7 @@ import { Product } from '@/types/product';
 
 const ProductsPage: React.FC = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const {
     products,
     showFilters,
@@ -52,8 +53,8 @@ const ProductsPage: React.FC = () => {
     handleBuyNow
   } = useCart();
 
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [quantity, setQuantity] = useState(1);
+  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
+  const [quantity, setQuantity] = React.useState(1);
 
   const handleAddToCartClick = (productId: number, productName: string) => {
     const product = products.find(p => p.id === productId);
@@ -76,6 +77,18 @@ const ProductsPage: React.FC = () => {
   };
   
   const handleBuyNowClick = (productId: number) => {
+    const isLoggedIn = false;
+
+    if (!isLoggedIn) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to purchase products",
+        variant: "default"
+      });
+      navigate('/login');
+      return;
+    }
+
     const product = products.find(p => p.id === productId);
     if (product) {
       handleBuyNow(product);
@@ -86,14 +99,14 @@ const ProductsPage: React.FC = () => {
     setFilters(prev => ({ ...prev, onSale: value }));
   };
 
+  const filteredProducts = products.filter(product => product.category === 'Electronics');
+
   return (
     <div className="animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">
-            {searchQuery ? `Search Results for "${searchQuery}"` : 'All Products'}
-          </h1>
-          <p className="text-gray-500">{products.length} products found</p>
+          <h1 className="text-2xl font-semibold">Electronics Products</h1>
+          <p className="text-gray-500">{filteredProducts.length} products found</p>
         </div>
         
         <div className="flex flex-wrap items-center gap-3">
@@ -136,7 +149,7 @@ const ProductsPage: React.FC = () => {
       <div className="flex flex-col md:flex-row gap-6">
         {showFilters && (
           <FilterSidebar
-            categories={categories}
+            categories={['Electronics']}
             brands={brands}
             priceRange={priceRange}
             filters={filters}
@@ -149,9 +162,9 @@ const ProductsPage: React.FC = () => {
         )}
         
         <div className="flex-1">
-          {products.length > 0 ? (
+          {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
