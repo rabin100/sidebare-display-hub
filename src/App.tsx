@@ -2,7 +2,6 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './App.css';
-import { UserProvider } from './contexts/UserContext';
 
 // Layouts
 import EcommerceLayout from './components/layout/EcommerceLayout';
@@ -14,7 +13,6 @@ import FinanceLayout from './components/layout/FinanceLayout';
 // Auth Pages
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
-import CustomerLoginPage from './pages/auth/CustomerLoginPage';
 
 // Ecommerce Pages
 import HomePage from './pages/ecommerce/HomePage';
@@ -46,6 +44,7 @@ import OrderHistoryPage from './pages/customer/OrderHistoryPage';
 import PaymentsPage from './pages/customer/PaymentsPage';
 import FeedbackPage from './pages/customer/FeedbackPage';
 import SettingsPage from './pages/customer/SettingsPage';
+import BrowseProductsPage from './pages/customer/BrowseProductsPage';
 import CheckoutPage from './pages/customer/CheckoutPage';
 
 // Finance Pages
@@ -80,10 +79,6 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
-  },
-  {
-    path: '/customer-login',
-    element: <CustomerLoginPage />,
   },
   {
     path: '/signup',
@@ -123,6 +118,7 @@ const router = createBrowserRouter([
       { path: 'payments', element: <PaymentsPage /> },
       { path: 'feedback', element: <FeedbackPage /> },
       { path: 'settings', element: <SettingsPage /> },
+      { path: 'browse', element: <BrowseProductsPage /> },
       { path: 'checkout', element: <CheckoutPage /> },
     ],
   },
@@ -150,11 +146,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <UserProvider>
-      <RouterProvider router={router} />
-    </UserProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Filter, ShoppingCart } from 'lucide-react';
 import { 
@@ -21,7 +21,7 @@ import { Product } from '@/types/product';
 const ProductsPage: React.FC = () => {
   const { toast } = useToast();
   const {
-    products: allProducts,
+    products,
     showFilters,
     setShowFilters,
     searchQuery,
@@ -35,16 +35,6 @@ const ProductsPage: React.FC = () => {
     resetFilters,
     setFilters
   } = useProductFilter();
-  
-  // Filter to only show electronics products
-  const [products, setProducts] = useState<Product[]>([]);
-  
-  useEffect(() => {
-    const electronicsProducts = allProducts.filter(product => 
-      product.category === 'Electronics'
-    );
-    setProducts(electronicsProducts);
-  }, [allProducts]);
 
   const {
     cart,
@@ -101,7 +91,7 @@ const ProductsPage: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-semibold">
-            {searchQuery ? `Search Results for "${searchQuery}"` : 'Electronics Products'}
+            {searchQuery ? `Search Results for "${searchQuery}"` : 'All Products'}
           </h1>
           <p className="text-gray-500">{products.length} products found</p>
         </div>

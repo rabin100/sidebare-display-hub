@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   CreditCard, 
@@ -8,9 +7,7 @@ import {
   AlertCircle, 
   CheckCircle, 
   ChevronRight, 
-  Shield,
-  UserCheck,
-  LogIn
+  Shield 
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,7 +18,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { createOrder, OrderItem, clearCart, processPayment } from '@/utils/orderUtils';
-import { useUser } from '@/contexts/UserContext';
 
 interface LocationState {
   products: OrderItem[];
@@ -32,26 +28,14 @@ const CheckoutPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isAuthenticated } = useUser();
   const [paymentMethod, setPaymentMethod] = useState('credit-card');
   const [orderProcessing, setOrderProcessing] = useState(false);
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [orderId, setOrderId] = useState('');
   
-  // If not authenticated, redirect to login
-  useEffect(() => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please login to continue with your purchase.",
-        variant: "destructive",
-      });
-    }
-  }, [isAuthenticated, toast]);
-  
   const [billingInfo, setBillingInfo] = useState({
-    fullName: user?.name || '',
-    email: user?.email || '',
+    fullName: '',
+    email: '',
     address: '',
     city: '',
     state: '',
@@ -61,17 +45,6 @@ const CheckoutPage: React.FC = () => {
     expiry: '',
     cvv: '',
   });
-  
-  // Update billing info when user changes
-  useEffect(() => {
-    if (user) {
-      setBillingInfo(prev => ({
-        ...prev,
-        fullName: user.name || prev.fullName,
-        email: user.email || prev.email,
-      }));
-    }
-  }, [user]);
   
   const orderItems: OrderItem[] = (location.state as LocationState)?.products || [];
   const orderTotal = (location.state as LocationState)?.totalAmount || 
@@ -88,16 +61,6 @@ const CheckoutPage: React.FC = () => {
   
   const handleSubmitOrder = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please login to place an order.",
-        variant: "destructive",
-      });
-      navigate('/customer-login');
-      return;
-    }
     
     if (!validateForm()) {
       toast({
@@ -141,32 +104,6 @@ const CheckoutPage: React.FC = () => {
     
     return requiredFields.every(field => billingInfo[field as keyof typeof billingInfo]);
   };
-  
-  if (!isAuthenticated) {
-    return (
-      <div className="max-w-3xl mx-auto py-8">
-        <Card>
-          <CardHeader className="text-center">
-            <div className="mx-auto w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-4">
-              <LogIn className="h-6 w-6 text-amber-600" />
-            </div>
-            <CardTitle className="text-2xl">Login Required</CardTitle>
-            <CardDescription>
-              Please log in to continue with your checkout
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex justify-center">
-            <div className="p-4 text-center">
-              <p className="mb-4">You need to be logged in to complete your purchase.</p>
-              <Button onClick={() => navigate('/customer-login')}>
-                Go to Login
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
   
   if (orderCompleted) {
     return (
@@ -247,11 +184,6 @@ const CheckoutPage: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto py-8">
       <h1 className="text-2xl font-bold mb-8">Checkout</h1>
-      
-      <div className="flex items-center gap-2 mb-4 p-3 bg-blue-50 rounded-lg">
-        <UserCheck className="h-5 w-5 text-blue-500" />
-        <span className="text-blue-700">Logged in as <strong>{user?.name}</strong></span>
-      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
