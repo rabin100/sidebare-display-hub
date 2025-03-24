@@ -41,7 +41,7 @@ const isOnSale = (): boolean => {
 };
 
 // Base products (original ones)
-export const allProducts: Product[] = [
+const baseProducts: Product[] = [
   {
     id: 1,
     name: 'Wireless Headphones',
@@ -581,8 +581,8 @@ for (let i = 0; i < 480; i++) {
   additionalProducts.push(newProduct);
 }
 
-// Combine original and additional products
-export const allProducts: Product[] = [
+// Define products with detailed information
+const detailedProducts: Product[] = [
   {
     id: 1,
     name: 'Wireless Headphones',
@@ -987,7 +987,12 @@ export const allProducts: Product[] = [
     stock: 18,
     sku: 'CP-DDT028',
     description: 'Pressure-sensitive drawing tablet for digital artists and graphic designers.'
-  },
+  }
+];
+
+// Combine base products, detailed products, and additional products
+export const allProducts: Product[] = [
+  ...detailedProducts,
   ...additionalProducts
 ];
 
