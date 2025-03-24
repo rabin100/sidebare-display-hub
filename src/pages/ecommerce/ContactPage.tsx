@@ -1,13 +1,12 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
-import { Mail, MapPin, Phone, MessageSquare, Send, Clock, CheckCircle, AlertCircle, HelpCircle, ShoppingBag } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
 const ContactPage: React.FC = () => {
   const { toast } = useToast();
@@ -17,383 +16,193 @@ const ContactPage: React.FC = () => {
     subject: '',
     message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    console.log('Form submitted:', formData);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast({
-        title: "Message sent!",
-        description: "We'll get back to you as soon as possible.",
-      });
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-    }, 1500);
+    // Show success toast
+    toast({
+      title: "Message Sent!",
+      description: "We'll get back to you as soon as possible.",
+    });
+    
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      subject: '',
+      message: ''
+    });
   };
 
-  const faqItems = [
-    {
-      question: "What is your return policy?",
-      answer: "We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return."
-    },
-    {
-      question: "How long does shipping take?",
-      answer: "Standard shipping typically takes 3-5 business days within the continental US. Express shipping options are available at checkout for faster delivery."
-    },
-    {
-      question: "Do you ship internationally?",
-      answer: "Yes, we ship to most countries worldwide. International shipping times and costs vary depending on the destination."
-    },
-    {
-      question: "How can I track my order?",
-      answer: "Once your order ships, you'll receive a confirmation email with tracking information. You can also track your order by logging into your account."
-    },
-    {
-      question: "Are my payment details secure?",
-      answer: "Absolutely! We use industry-standard encryption and secure payment processors to ensure your payment information is always protected."
-    }
-  ];
-
   return (
-    <div className="w-full animate-fade-in">
-      {/* Hero Section */}
-      <section className="bg-blue-600 text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-          <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-            Have questions, suggestions, or just want to say hello? We'd love to hear from you! 
-            Reach out to our team using any of the methods below.
-          </p>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-4xl font-bold mb-8 text-center">Contact Us</h1>
+        
+        <div className="grid gap-8 md:grid-cols-3 mb-12">
+          <Card>
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <Phone className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Phone</h3>
+              <p className="text-gray-600">+1 (555) 123-4567</p>
+              <p className="text-gray-600">Mon-Fri, 9am-5pm EST</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <Mail className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Email</h3>
+              <p className="text-gray-600">support@example.com</p>
+              <p className="text-gray-600">We reply within 24 hours</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <MapPin className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Location</h3>
+              <p className="text-gray-600">123 Commerce Street</p>
+              <p className="text-gray-600">New York, NY 10001</p>
+            </CardContent>
+          </Card>
         </div>
-      </section>
-      
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <Tabs defaultValue="contact" className="mb-12">
-            <div className="flex justify-center mb-8">
-              <TabsList>
-                <TabsTrigger value="contact">Contact</TabsTrigger>
-                <TabsTrigger value="faq">FAQ</TabsTrigger>
-                <TabsTrigger value="support">Support</TabsTrigger>
-              </TabsList>
-            </div>
+        
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Send Us a Message</h2>
+            <p className="text-gray-700 mb-6">
+              Have a question, comment, or concern? Fill out the form below and we'll get back to you as soon as possible.
+            </p>
             
-            <TabsContent value="contact" className="animate-fade-in">
-              <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                {/* Contact Information */}
-                <div className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Get in Touch</CardTitle>
-                      <CardDescription>Our team is here to help</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="flex items-start">
-                        <div className="bg-blue-100 p-3 rounded-full mr-4">
-                          <Mail className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Email Us</h3>
-                          <p className="text-gray-600">support@shophub.com</p>
-                          <p className="text-sm text-gray-500 mt-1">We'll respond within 24 hours</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start">
-                        <div className="bg-blue-100 p-3 rounded-full mr-4">
-                          <Phone className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Call Us</h3>
-                          <p className="text-gray-600">+1 (555) 123-4567</p>
-                          <p className="text-sm text-gray-500 mt-1">Mon-Fri, 9am-6pm EST</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start">
-                        <div className="bg-blue-100 p-3 rounded-full mr-4">
-                          <MapPin className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Visit Us</h3>
-                          <p className="text-gray-600">123 E-Commerce St.</p>
-                          <p className="text-gray-600">San Francisco, CA 94105</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start">
-                        <div className="bg-blue-100 p-3 rounded-full mr-4">
-                          <MessageSquare className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Live Chat</h3>
-                          <p className="text-gray-600">Available through our app</p>
-                          <p className="text-sm text-gray-500 mt-1">Get instant responses</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start">
-                        <div className="bg-blue-100 p-3 rounded-full mr-4">
-                          <Clock className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Business Hours</h3>
-                          <p className="text-gray-600">Monday - Friday: 9am - 6pm</p>
-                          <p className="text-gray-600">Saturday: 10am - 4pm</p>
-                          <p className="text-gray-600">Sunday: Closed</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+            <Card>
+              <CardContent className="p-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Your Name</Label>
+                    <Input 
+                      id="name" 
+                      name="name" 
+                      placeholder="John Doe" 
+                      required 
+                      value={formData.name}
+                      onChange={handleChange}
+                    />
+                  </div>
                   
-                  {/* Google Map */}
-                  <Card className="overflow-hidden">
-                    <CardContent className="p-0">
-                      <div className="w-full h-[300px] relative">
-                        <iframe 
-                          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d50470.27509238427!2d-122.42975444169043!3d37.78436444162706!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808580e139d6c399%3A0x611ebcce88b67553!2sSan%20Francisco%2C%20CA%2094105!5e0!3m2!1sen!2sus!4v1611703566229!5m2!1sen!2sus" 
-                          width="100%" 
-                          height="300" 
-                          style={{ border: 0 }} 
-                          allowFullScreen 
-                          loading="lazy" 
-                          referrerPolicy="no-referrer-when-downgrade"
-                          title="ShopHub Office Location"
-                        ></iframe>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-                
-                {/* Contact Form */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Send Us a Message</CardTitle>
-                    <CardDescription>We'd love to hear from you</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Full Name</Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          placeholder="Your name"
-                          required
-                          value={formData.name}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          placeholder="your.email@example.com"
-                          required
-                          value={formData.email}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="subject">Subject</Label>
-                        <Input
-                          id="subject"
-                          name="subject"
-                          placeholder="What's this about?"
-                          required
-                          value={formData.subject}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="message">Message</Label>
-                        <Textarea
-                          id="message"
-                          name="message"
-                          placeholder="Tell us how we can help..."
-                          rows={5}
-                          required
-                          value={formData.message}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      
-                      <Button 
-                        type="submit" 
-                        className="w-full" 
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? (
-                          "Sending..."
-                        ) : (
-                          <>
-                            <Send className="mr-2 h-4 w-4" />
-                            Send Message
-                          </>
-                        )}
-                      </Button>
-                    </form>
-                  </CardContent>
-                  <CardFooter className="flex flex-col text-sm text-gray-500">
-                    <p>Our customer support team typically responds within 24 hours.</p>
-                  </CardFooter>
-                </Card>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="faq" className="animate-fade-in">
-              <div className="max-w-3xl mx-auto">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <HelpCircle className="h-5 w-5" />
-                      Frequently Asked Questions
-                    </CardTitle>
-                    <CardDescription>Find answers to common questions about our services</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-6">
-                      {faqItems.map((item, index) => (
-                        <div key={index} className="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
-                          <h3 className="font-medium text-lg mb-2 flex items-start">
-                            <span className="text-blue-500 mr-2">Q:</span> {item.question}
-                          </h3>
-                          <p className="text-gray-600 pl-5">{item.answer}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <p className="text-sm text-gray-500">Don't see your question here? Contact our support team.</p>
-                  </CardFooter>
-                </Card>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="support" className="animate-fade-in">
-              <div className="max-w-4xl mx-auto">
-                <div className="grid md:grid-cols-3 gap-6">
-                  <Card>
-                    <CardHeader className="text-center pb-2">
-                      <div className="mx-auto bg-green-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
-                        <CheckCircle className="h-6 w-6 text-green-600" />
-                      </div>
-                      <CardTitle className="text-xl">Customer Service</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-center">
-                      <p className="mb-4">For general inquiries and order assistance</p>
-                      <p className="text-gray-600 font-medium">support@shophub.com</p>
-                      <p className="text-gray-600">+1 (555) 123-4567</p>
-                    </CardContent>
-                  </Card>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input 
+                      id="email" 
+                      name="email" 
+                      type="email" 
+                      placeholder="john@example.com" 
+                      required 
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                  </div>
                   
-                  <Card>
-                    <CardHeader className="text-center pb-2">
-                      <div className="mx-auto bg-blue-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
-                        <AlertCircle className="h-6 w-6 text-blue-600" />
-                      </div>
-                      <CardTitle className="text-xl">Technical Support</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-center">
-                      <p className="mb-4">For website issues and account problems</p>
-                      <p className="text-gray-600 font-medium">tech@shophub.com</p>
-                      <p className="text-gray-600">+1 (555) 987-6543</p>
-                    </CardContent>
-                  </Card>
+                  <div className="space-y-2">
+                    <Label htmlFor="subject">Subject</Label>
+                    <Input 
+                      id="subject" 
+                      name="subject" 
+                      placeholder="How can we help you?" 
+                      required 
+                      value={formData.subject}
+                      onChange={handleChange}
+                    />
+                  </div>
                   
-                  <Card>
-                    <CardHeader className="text-center pb-2">
-                      <div className="mx-auto bg-purple-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
-                        <ShoppingBag className="h-6 w-6 text-purple-600" />
-                      </div>
-                      <CardTitle className="text-xl">Business Inquiries</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-center">
-                      <p className="mb-4">For partnerships and business opportunities</p>
-                      <p className="text-gray-600 font-medium">business@shophub.com</p>
-                      <p className="text-gray-600">+1 (555) 456-7890</p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-      
-      {/* Commitment Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-3">Our Commitment to You</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">At ShopHub, we're dedicated to providing exceptional customer service with every interaction.</p>
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea 
+                      id="message" 
+                      name="message" 
+                      placeholder="Your message here..." 
+                      rows={5} 
+                      required 
+                      value={formData.message}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  
+                  <Button type="submit" className="w-full">
+                    <Send className="mr-2 h-4 w-4" />
+                    Send Message
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center">
-              <div className="bg-blue-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="h-7 w-7 text-blue-600" />
-              </div>
-              <h3 className="font-medium text-lg mb-2">Quick Response</h3>
-              <p className="text-gray-600">We respond to all inquiries within 24 hours, usually much faster.</p>
-            </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Find Us</h2>
+            <p className="text-gray-700 mb-6">
+              We're conveniently located in downtown New York. Stop by our store or use the map below to find us.
+            </p>
             
-            <div className="text-center">
-              <div className="bg-blue-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <HelpCircle className="h-7 w-7 text-blue-600" />
-              </div>
-              <h3 className="font-medium text-lg mb-2">Expert Assistance</h3>
-              <p className="text-gray-600">Our knowledgeable team has the expertise to solve your problems.</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="bg-blue-100 p-4 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="h-7 w-7 text-blue-600" />
-              </div>
-              <h3 className="font-medium text-lg mb-2">Friendly Service</h3>
-              <p className="text-gray-600">We believe in treating every customer with respect and courtesy.</p>
-            </div>
+            <Card className="overflow-hidden h-[400px]">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9663095343067!2d-73.9910086847834!3d40.74132807932847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9aeb1c6b5%3A0x35b1cfbc89a6097f!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1615294821576!5m2!1sen!2sus" 
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen 
+                loading="lazy"
+                title="Our Location"
+              ></iframe>
+            </Card>
           </div>
         </div>
-      </section>
-      
-      {/* Newsletter Section */}
-      <section className="py-16 bg-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-3">Stay Updated</h2>
-          <p className="text-blue-100 mb-6 max-w-2xl mx-auto">Subscribe to our newsletter for the latest product updates, special offers, and more.</p>
-          
-          <div className="max-w-md mx-auto flex gap-2">
-            <Input 
-              type="email" 
-              placeholder="Your email address" 
-              className="flex-grow bg-white"
-            />
-            <Button type="button" className="bg-white text-blue-600 hover:bg-gray-100">Subscribe</Button>
-          </div>
-        </div>
-      </section>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center">Frequently Asked Questions</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-6">
+              {[
+                {
+                  question: "What are your shipping times?",
+                  answer: "Standard shipping takes 3-5 business days. Express shipping is available for 1-2 business day delivery."
+                },
+                {
+                  question: "How do I return an item?",
+                  answer: "You can initiate a return through your account dashboard within 30 days of purchase. We provide a prepaid shipping label for all returns."
+                },
+                {
+                  question: "Do you ship internationally?",
+                  answer: "Yes, we ship to over 100 countries worldwide. International shipping typically takes 7-14 business days."
+                },
+                {
+                  question: "What payment methods do you accept?",
+                  answer: "We accept all major credit cards, PayPal, Apple Pay, and Google Pay."
+                }
+              ].map((faq, index) => (
+                <div key={index}>
+                  <h3 className="font-bold text-lg mb-2">{faq.question}</h3>
+                  <p className="text-gray-600">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
