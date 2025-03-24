@@ -581,7 +581,7 @@ for (let i = 0; i < 480; i++) {
   additionalProducts.push(newProduct);
 }
 
-// Define products with detailed information
+// Define detailed products with more complete information
 const detailedProducts: Product[] = [
   {
     id: 1,
@@ -990,7 +990,7 @@ const detailedProducts: Product[] = [
   }
 ];
 
-// Combine base products, detailed products, and additional products
+// Now export a single combined array of all products
 export const allProducts: Product[] = [
   ...detailedProducts,
   ...additionalProducts
