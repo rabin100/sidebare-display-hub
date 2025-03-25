@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -56,6 +55,7 @@ const ProductsPage: React.FC = () => {
 
   const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
   const [quantity, setQuantity] = React.useState(1);
+  const [sortOption, setSortOption] = React.useState("featured");
 
   const handleAddToCartClick = (productId: number, productName: string) => {
     const product = products.find(p => p.id === productId);
@@ -100,14 +100,47 @@ const ProductsPage: React.FC = () => {
     setFilters(prev => ({ ...prev, onSale: value }));
   };
 
-  const filteredProducts = products.filter(product => product.category === 'Electronics');
+  const handleSortChange = (value: string) => {
+    setSortOption(value);
+  };
+
+  const sortedProducts = React.useMemo(() => {
+    let sorted = [...products];
+    
+    switch(sortOption) {
+      case "price-low":
+        sorted.sort((a, b) => {
+          const aPrice = a.onSale ? (a.salePrice || a.price) : a.price;
+          const bPrice = b.onSale ? (b.salePrice || b.price) : b.price;
+          return aPrice - bPrice;
+        });
+        break;
+      case "price-high":
+        sorted.sort((a, b) => {
+          const aPrice = a.onSale ? (a.salePrice || a.price) : a.price;
+          const bPrice = b.onSale ? (b.salePrice || b.price) : b.price;
+          return bPrice - aPrice;
+        });
+        break;
+      case "rating":
+        sorted.sort((a, b) => b.rating - a.rating);
+        break;
+      case "newest":
+        sorted.sort((a, b) => b.id - a.id);
+        break;
+      default: // "featured"
+        break;
+    }
+    
+    return sorted;
+  }, [products, sortOption]);
 
   return (
     <div className="animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Electronics Products</h1>
-          <p className="text-gray-500">{filteredProducts.length} products found</p>
+          <p className="text-gray-500">{sortedProducts.length} products found</p>
         </div>
         
         <div className="flex flex-wrap items-center gap-3">
@@ -132,7 +165,7 @@ const ProductsPage: React.FC = () => {
             <span>{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
           </Button>
           
-          <Select defaultValue="featured">
+          <Select value={sortOption} onValueChange={handleSortChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -163,9 +196,9 @@ const ProductsPage: React.FC = () => {
         )}
         
         <div className="flex-1">
-          {filteredProducts.length > 0 ? (
+          {sortedProducts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
+              {sortedProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
