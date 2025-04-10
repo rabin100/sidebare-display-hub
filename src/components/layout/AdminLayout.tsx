@@ -7,16 +7,16 @@ import HeaderActions from './HeaderActions';
 
 const AdminLayout: React.FC = () => {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen w-full">
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden w-full">
         <div className="flex justify-between items-center">
           <AdminHeader title="Admin Dashboard" />
           <div className="pr-6">
             <HeaderActions profilePath="/admin/profile" />
           </div>
         </div>
-        <main className="flex-1 overflow-auto bg-admin-bg p-6">
+        <main className="flex-1 overflow-auto bg-admin-bg p-6 w-full">
           <Outlet />
         </main>
       </div>

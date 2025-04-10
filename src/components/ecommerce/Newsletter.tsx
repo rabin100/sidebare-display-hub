@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 const Newsletter: React.FC = () => {
   return (
-    <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+    <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white w-full">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
         <p className="max-w-2xl mx-auto mb-8 text-blue-100">
