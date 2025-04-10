@@ -7,6 +7,7 @@ import { Star, ShoppingCart, ChevronRight, Heart, ArrowRight } from 'lucide-reac
 import { Link } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { allProducts } from '@/types/product';
+import HomeSlider from '@/components/ecommerce/HomeSlider';
 
 const HomePage: React.FC = () => {
   const { toast } = useToast();
@@ -28,29 +29,9 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="w-full animate-fade-in">
-      {/* Hero Section - Full Screen with Gradient Overlay */}
-      <section className="relative w-full h-screen flex items-center">
-        <img 
-          src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b" 
-          alt="Tech Banner" 
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-transparent"></div>
-        <div className="relative z-10 ml-8 md:ml-16 max-w-xl text-white">
-          <Badge className="bg-blue-500 hover:bg-blue-600 mb-4">Latest Technology</Badge>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">Innovation at Your Fingertips</h1>
-          <p className="text-xl opacity-90 mb-8">
-            Explore our extensive collection of cutting-edge electronics and machines designed to enhance your daily life.
-          </p>
-          <div className="flex gap-4">
-            <Button size="lg" asChild className="bg-blue-600 hover:bg-blue-700 transition-colors">
-              <Link to="/products">Shop Now</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white/10">
-              <Link to="/categories">Explore Categories</Link>
-            </Button>
-          </div>
-        </div>
+      {/* Hero Section with Slider */}
+      <section className="relative w-full">
+        <HomeSlider />
       </section>
 
       {/* Featured Categories with Modern Cards */}
@@ -161,7 +142,63 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Why Choose Us Section - New */}
+      {/* About Our System Section - New */}
+      <section className="py-16 bg-blue-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <Badge className="bg-blue-500 hover:bg-blue-600 mb-4">About Our System</Badge>
+            <h2 className="text-3xl font-bold mb-4">Your Complete Electronics Shopping Solution</h2>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              Our comprehensive e-commerce platform delivers an intuitive shopping experience with
+              secure transactions, detailed product information, and personalized recommendations.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="border-none shadow-md hover:shadow-lg transition-shadow">
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                  <ShoppingCart className="h-8 w-8 text-blue-600" />
+                </div>
+                <h3 className="font-bold text-xl mb-3">Easy Shopping</h3>
+                <p className="text-gray-500">
+                  Our intuitive interface makes browsing and purchasing electronics a seamless experience.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-none shadow-md hover:shadow-lg transition-shadow">
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                  <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <h3 className="font-bold text-xl mb-3">Secure Transactions</h3>
+                <p className="text-gray-500">
+                  All payments are encrypted and secure, ensuring your personal information stays protected.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-none shadow-md hover:shadow-lg transition-shadow">
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-4">
+                  <svg className="h-8 w-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                </div>
+                <h3 className="font-bold text-xl mb-3">Fast Delivery</h3>
+                <p className="text-gray-500">
+                  Get your electronics delivered quickly and efficiently to your doorstep.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
       <section className="py-16 bg-gray-900 text-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us</h2>
@@ -193,7 +230,7 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Testimonials Section - New */}
+      {/* Testimonials Section */}
       <section className="py-20 bg-blue-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-2">What Our Customers Say</h2>
