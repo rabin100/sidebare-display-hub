@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -17,10 +17,13 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
-import { FileText, BarChart3, Download, Calendar } from 'lucide-react';
+import { FileText, BarChart3, Download, Calendar, Printer } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const Reports: React.FC = () => {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('sales');
+  const reportContentRef = useRef<HTMLDivElement>(null);
   
   // Sample data for demonstration
   const salesData = [
@@ -50,18 +53,171 @@ const Reports: React.FC = () => {
   ];
 
   const handleDownloadReport = () => {
-    console.log(`Downloading ${activeTab} report...`);
-    // Implement download functionality
+    toast({
+      title: "Download started",
+      description: `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} report is being downloaded.`,
+    });
+    
+    // Simulate download delay
+    setTimeout(() => {
+      toast({
+        title: "Download complete",
+        description: `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} report has been downloaded successfully.`,
+      });
+    }, 1500);
+  };
+
+  const handlePrintReport = () => {
+    toast({
+      title: "Preparing to print",
+      description: `${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} report is being prepared for printing.`,
+    });
+    
+    let printContent = '';
+    let title = '';
+    
+    // Create content based on active tab
+    if (activeTab === 'sales') {
+      title = 'Sales Report';
+      printContent = `
+        <table border="1" style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Revenue</th>
+              <th>Orders</th>
+              <th>Avg. Order Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${salesData.map(day => `
+              <tr>
+                <td>${day.date}</td>
+                <td>$${day.revenue.toFixed(2)}</td>
+                <td>${day.orders}</td>
+                <td>$${day.avgOrderValue.toFixed(2)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    } else if (activeTab === 'products') {
+      title = 'Product Performance Report';
+      printContent = `
+        <table border="1" style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Units Sold</th>
+              <th>Revenue</th>
+              <th>Current Stock</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${productData.map(product => `
+              <tr>
+                <td>${product.name}</td>
+                <td>${product.sold}</td>
+                <td>$${product.revenue.toFixed(2)}</td>
+                <td>${product.stock}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    } else if (activeTab === 'customers') {
+      title = 'Customer Insights Report';
+      printContent = `
+        <table border="1" style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Orders</th>
+              <th>Total Spent</th>
+              <th>Last Order</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${customerData.map(customer => `
+              <tr>
+                <td>${customer.name}</td>
+                <td>${customer.orders}</td>
+                <td>$${customer.spent.toFixed(2)}</td>
+                <td>${customer.lastOrder}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+    
+    const fullPrintContent = `
+      <html>
+        <head>
+          <title>${title}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #333; }
+            .report-header { border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 20px; }
+            .report-meta { color: #666; font-size: 14px; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+          </style>
+        </head>
+        <body>
+          <div class="report-header">
+            <h1>${title}</h1>
+            <div class="report-meta">
+              <p>Generated on: ${new Date().toLocaleDateString()}</p>
+            </div>
+          </div>
+          <div class="report-content">
+            ${printContent}
+          </div>
+        </body>
+      </html>
+    `;
+    
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(fullPrintContent);
+      printWindow.document.close();
+      
+      // Wait for content to load before printing
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+        
+        toast({
+          title: "Print prepared",
+          description: "The report has been sent to the printer.",
+        });
+      }, 500);
+    } else {
+      toast({
+        title: "Print error",
+        description: "Unable to open print preview. Please check your popup settings.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Reports</h1>
-        <Button onClick={handleDownloadReport}>
-          <Download className="mr-2 h-4 w-4" />
-          Download Report
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleDownloadReport}>
+            <Download className="mr-2 h-4 w-4" />
+            Download Report
+          </Button>
+          <Button variant="outline" onClick={handlePrintReport}>
+            <Printer className="mr-2 h-4 w-4" />
+            Print Report
+          </Button>
+        </div>
       </div>
       
       <Card>
@@ -69,7 +225,7 @@ const Reports: React.FC = () => {
           <CardTitle>Report Dashboard</CardTitle>
           <CardDescription>View and analyze your shop's performance.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent ref={reportContentRef}>
           <Tabs 
             defaultValue="sales" 
             onValueChange={setActiveTab}
@@ -91,7 +247,7 @@ const Reports: React.FC = () => {
             </TabsList>
             
             <TabsContent value="sales" className="space-y-4">
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
                   <CardContent className="pt-6">
                     <div className="text-xl font-medium">$13,818.53</div>

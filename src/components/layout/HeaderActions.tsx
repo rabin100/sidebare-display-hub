@@ -29,7 +29,8 @@ const HeaderActions: React.FC<HeaderActionsProps> = ({ profilePath }) => {
       title: "Logged out",
       description: "You have been successfully logged out."
     });
-    navigate('/login');
+    // Redirect to home page after logout
+    navigate('/');
   };
 
   return (
