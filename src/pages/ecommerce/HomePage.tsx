@@ -28,54 +28,63 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="w-full animate-fade-in">
-      {/* Hero Section - Full Screen */}
+      {/* Hero Section - Full Screen with Gradient Overlay */}
       <section className="relative w-full h-screen flex items-center">
         <img 
-          src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
-          alt="E-commerce Banner" 
+          src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b" 
+          alt="Tech Banner" 
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-transparent"></div>
         <div className="relative z-10 ml-8 md:ml-16 max-w-xl text-white">
-          <Badge className="bg-blue-500 hover:bg-blue-600 mb-4">Summer Collection 2023</Badge>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Discover Your Style</h1>
+          <Badge className="bg-blue-500 hover:bg-blue-600 mb-4">Latest Technology</Badge>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">Innovation at Your Fingertips</h1>
           <p className="text-xl opacity-90 mb-8">
-            Shop the latest trends with amazing deals and exclusive offers.
+            Explore our extensive collection of cutting-edge electronics and machines designed to enhance your daily life.
           </p>
           <div className="flex gap-4">
-            <Button size="lg" asChild className="bg-white text-blue-600 hover:bg-gray-100">
+            <Button size="lg" asChild className="bg-blue-600 hover:bg-blue-700 transition-colors">
               <Link to="/products">Shop Now</Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white/10">
-              <Link to="/categories">Browse Categories</Link>
+              <Link to="/categories">Explore Categories</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-20 bg-gray-50">
+      {/* Featured Categories with Modern Cards */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-10">
-            <h2 className="text-3xl font-bold">Shop by Category</h2>
-            <Link to="/categories" className="flex items-center text-blue-600 hover:text-blue-800 gap-2 group">
-              <span>View All Categories</span>
-              <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-3">Popular Categories</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Browse our most popular tech categories and find exactly what you're looking for
+            </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {['Electronics', 'Clothing', 'Home', 'Accessories'].map((category, index) => (
-              <Link to={`/products?category=${category}`} key={index} className="group">
-                <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            {[
+              { name: 'Laptops', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f', icon: '💻' },
+              { name: 'Smartphones', image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158', icon: '📱' },
+              { name: 'Smart Home', image: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81', icon: '🏠' },
+              { name: 'Accessories', image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5', icon: '🎧' }
+            ].map((category, index) => (
+              <Link to={`/products?category=${category.name}`} key={index} className="group">
+                <div className="glass-card rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 h-full">
                   <div className="h-48 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10"></div>
                     <img 
-                      src={`https://images.unsplash.com/photo-${1500000000000 + index * 1000000}`} 
-                      alt={category} 
+                      src={category.image} 
+                      alt={category.name} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
-                      <h3 className="text-white text-xl font-bold p-6">{category}</h3>
+                    <div className="absolute inset-0 z-20 flex flex-col justify-end p-6 text-white">
+                      <span className="text-3xl mb-2">{category.icon}</span>
+                      <h3 className="text-xl font-bold mb-1">{category.name}</h3>
+                      <span className="text-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center">
+                        Shop now <ArrowRight className="h-4 w-4 ml-1 group-hover:ml-2 transition-all" />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -85,11 +94,14 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* Featured Products with Improved Grid */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-10">
-            <h2 className="text-3xl font-bold">Featured Products</h2>
+            <div>
+              <h2 className="text-3xl font-bold">Featured Products</h2>
+              <p className="text-gray-600 mt-2">Our most popular products this week</p>
+            </div>
             <Link to="/products" className="flex items-center text-blue-600 hover:text-blue-800 gap-2 group">
               <span>View All Products</span>
               <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -98,13 +110,15 @@ const HomePage: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product) => (
-              <Card key={product.id} className="group overflow-hidden hover:shadow-md transition-shadow h-full">
+              <Card key={product.id} className="group overflow-hidden hover:shadow-xl transition-shadow border border-gray-200 h-full">
                 <div className="relative">
-                  <img 
-                    src={product.image} 
-                    alt={product.name} 
-                    className="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                  <Link to={`/products/${product.id}`}>
+                    <img 
+                      src={product.image} 
+                      alt={product.name} 
+                      className="w-full h-60 object-contain bg-gray-50 p-4 group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </Link>
                   {product.onSale && (
                     <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">
                       Sale
@@ -125,7 +139,7 @@ const HomePage: React.FC = () => {
                     <span className="text-sm font-medium">{product.rating}</span>
                     <span className="text-xs text-gray-500">({product.ratingCount})</span>
                   </div>
-                  <h3 className="font-medium text-lg mb-1">{product.name}</h3>
+                  <h3 className="font-medium text-lg mb-1 line-clamp-2">{product.name}</h3>
                   <div className="flex items-center gap-2 mb-3">
                     {product.onSale ? (
                       <>
@@ -136,7 +150,7 @@ const HomePage: React.FC = () => {
                       <span className="font-semibold">${product.price.toFixed(2)}</span>
                     )}
                   </div>
-                  <Button className="w-full gap-2" onClick={handleAddToCart}>
+                  <Button className="w-full gap-2 bg-blue-600 hover:bg-blue-700" onClick={handleAddToCart}>
                     <ShoppingCart className="h-4 w-4" />
                     Add to Cart
                   </Button>
@@ -147,32 +161,82 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 bg-blue-50">
+      {/* Why Choose Us Section - New */}
+      <section className="py-16 bg-gray-900 text-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
               { 
-                title: "Free Shipping", 
-                description: "On all orders over $50",
-                icon: "📦"
+                title: "Quality Guaranteed", 
+                description: "All our electronics undergo rigorous quality checks before shipping.",
+                icon: "⭐"
               },
               { 
-                title: "Easy Returns", 
-                description: "30-day money back guarantee",
-                icon: "🔄"
+                title: "Fast Shipping", 
+                description: "Receive your order within 2-3 business days with our express shipping.",
+                icon: "🚚"
               },
               { 
-                title: "Secure Payments", 
-                description: "Protected by industry-leading encryption",
-                icon: "🔒"
+                title: "24/7 Support", 
+                description: "Our customer service team is available around the clock to assist you.",
+                icon: "🛠️"
               }
             ].map((feature, index) => (
-              <Card key={index} className="text-center p-6 hover:shadow-md transition-shadow border-none bg-white">
-                <CardContent className="p-0">
-                  <div className="text-4xl mb-4">{feature.icon}</div>
-                  <h3 className="font-semibold text-xl mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+              <div key={index} className="text-center p-6 hover-lift hover:bg-blue-800/30 rounded-xl transition-all">
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="font-semibold text-xl mb-3">{feature.title}</h3>
+                <p className="text-gray-300">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section - New */}
+      <section className="py-20 bg-blue-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-2">What Our Customers Say</h2>
+          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Trusted by thousands of satisfied customers worldwide</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sarah Johnson",
+                role: "Tech Enthusiast",
+                quote: "The quality of electronics I've purchased here exceeds my expectations. Fast shipping and excellent customer service!",
+                rating: 5
+              },
+              {
+                name: "Michael Chen",
+                role: "Software Developer",
+                quote: "I've been shopping for computer parts here for years. The prices are competitive and the selection is unbeatable.",
+                rating: 5
+              },
+              {
+                name: "Emma Rodriguez",
+                role: "Smart Home Expert",
+                quote: "Their smart home devices have transformed my living space. The team was incredibly helpful with installation advice.",
+                rating: 4
+              }
+            ].map((testimonial, index) => (
+              <Card key={index} className="border-none shadow-md hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`h-5 w-5 ${i < testimonial.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`} />
+                    ))}
+                  </div>
+                  <p className="italic text-gray-600 mb-6">"{testimonial.quote}"</p>
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-bold mr-4">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-500">{testimonial.role}</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -180,20 +244,20 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="py-20 bg-blue-600 text-white">
+      {/* Newsletter Section - Redesigned */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Join Our Newsletter</h2>
+          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
           <p className="max-w-2xl mx-auto mb-8 text-blue-100">
-            Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.
+            Subscribe to our newsletter for exclusive deals, new product announcements, and tech tips.
           </p>
           <div className="flex max-w-md mx-auto">
             <input
               type="email"
               placeholder="Your email address"
-              className="flex-grow px-4 py-3 text-gray-900 rounded-l-md focus:outline-none"
+              className="flex-grow px-4 py-3 text-gray-900 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
-            <Button className="rounded-l-none bg-blue-800 hover:bg-blue-900">
+            <Button className="rounded-l-none bg-blue-900 hover:bg-blue-950">
               Subscribe
             </Button>
           </div>
