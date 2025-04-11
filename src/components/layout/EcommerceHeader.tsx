@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 interface EcommerceHeaderProps {
   className?: string;
@@ -19,6 +20,7 @@ const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
   const isHomePage = location.pathname === '/';
 
   const handleSearch = (e: React.FormEvent) => {
@@ -26,6 +28,17 @@ const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
     if (searchTerm.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchTerm)}`);
     }
+  };
+  
+  const handleLogout = () => {
+    // In a real app, this would clear authentication tokens/cookies
+    localStorage.removeItem('currentUser');
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out."
+    });
+    // Redirect to home page
+    navigate('/');
   };
 
   return (
@@ -77,11 +90,9 @@ const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
                     <span>Edit Profile</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/login" className="flex items-center">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Logout</span>
-                  </Link>
+                <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
                 </DropdownMenuItem>
               </>
             )}
