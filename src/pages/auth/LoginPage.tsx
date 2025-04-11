@@ -42,6 +42,11 @@ const LoginPage: React.FC = () => {
           title: "Welcome back, Admin!",
           description: "You've been logged in successfully.",
         });
+        localStorage.setItem('currentUser', JSON.stringify({
+          role: 'admin',
+          email: formData.email,
+          name: 'Admin User'
+        }));
         navigate('/admin');
         return;
       }
@@ -52,6 +57,11 @@ const LoginPage: React.FC = () => {
           title: "Welcome back, Manager!",
           description: "You've been logged in successfully.",
         });
+        localStorage.setItem('currentUser', JSON.stringify({
+          role: 'manager',
+          email: formData.email,
+          name: 'Manager User'
+        }));
         navigate('/manager');
         return;
       }
@@ -62,6 +72,11 @@ const LoginPage: React.FC = () => {
           title: "Welcome back!",
           description: "You've been logged in successfully.",
         });
+        localStorage.setItem('currentUser', JSON.stringify({
+          role: 'user',
+          email: formData.email,
+          name: 'Regular User'
+        }));
         navigate('/');
         return;
       }

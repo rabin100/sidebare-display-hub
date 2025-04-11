@@ -33,6 +33,10 @@ const HeaderActions: React.FC<HeaderActionsProps> = ({ profilePath }) => {
     navigate('/');
   };
 
+  const userInfo = localStorage.getItem('currentUser') 
+    ? JSON.parse(localStorage.getItem('currentUser') || '{}')
+    : null;
+
   return (
     <div className="flex items-center gap-4">
       <Button variant="ghost" size="icon" className="relative">
@@ -46,7 +50,7 @@ const HeaderActions: React.FC<HeaderActionsProps> = ({ profilePath }) => {
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" alt="User" />
               <AvatarFallback>
-                <User className="h-5 w-5 text-gray-600" />
+                {userInfo?.name?.charAt(0) || <User className="h-5 w-5 text-gray-600" />}
               </AvatarFallback>
             </Avatar>
           </Button>

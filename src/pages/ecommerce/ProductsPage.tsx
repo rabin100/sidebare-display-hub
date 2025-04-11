@@ -78,7 +78,7 @@ const ProductsPage: React.FC = () => {
   };
   
   const handleBuyNowClick = (productId: number) => {
-    const isLoggedIn = false;
+    const isLoggedIn = localStorage.getItem('currentUser') !== null;
 
     if (!isLoggedIn) {
       toast({
@@ -151,7 +151,7 @@ const ProductsPage: React.FC = () => {
             >
               <ShoppingCart className="h-4 w-4" />
               <span>Cart ({cartItemCount})</span>
-              <span className="font-bold">${cartTotal.toFixed(2)}</span>
+              <span className="font-bold">ETB {cartTotal.toFixed(2)}</span>
             </Button>
           )}
           

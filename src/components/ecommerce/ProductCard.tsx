@@ -37,11 +37,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onBuyNo
         <div className="flex items-center gap-2 mb-3">
           {product.onSale ? (
             <>
-              <span className="font-semibold">${product.salePrice}</span>
-              <span className="text-gray-500 line-through text-sm">${product.price}</span>
+              <span className="font-semibold">ETB {product.salePrice}</span>
+              <span className="text-gray-500 line-through text-sm">ETB {product.price}</span>
             </>
           ) : (
-            <span className="font-semibold">${product.price}</span>
+            <span className="font-semibold">ETB {product.price}</span>
           )}
         </div>
         <div className="flex gap-2">

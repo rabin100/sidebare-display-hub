@@ -75,11 +75,11 @@ const FeaturedProducts: React.FC = () => {
                 <div className="flex items-center gap-2 mb-3">
                   {product.onSale ? (
                     <>
-                      <span className="font-semibold">${product.salePrice?.toFixed(2)}</span>
-                      <span className="text-gray-500 line-through text-sm">${product.price.toFixed(2)}</span>
+                      <span className="font-semibold">ETB {product.salePrice?.toFixed(2)}</span>
+                      <span className="text-gray-500 line-through text-sm">ETB {product.price.toFixed(2)}</span>
                     </>
                   ) : (
-                    <span className="font-semibold">${product.price.toFixed(2)}</span>
+                    <span className="font-semibold">ETB {product.price.toFixed(2)}</span>
                   )}
                 </div>
                 <Button className="w-full gap-2 bg-blue-600 hover:bg-blue-700" onClick={handleAddToCart}>

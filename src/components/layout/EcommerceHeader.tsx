@@ -22,6 +22,7 @@ const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
   const location = useLocation();
   const { toast } = useToast();
   const isHomePage = location.pathname === '/';
+  const isLoggedIn = localStorage.getItem('currentUser') !== null;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +40,10 @@ const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
     });
     // Redirect to home page
     navigate('/');
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
   };
 
   return (
@@ -69,9 +74,9 @@ const EcommerceHeader: React.FC<EcommerceHeaderProps> = ({ className }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 mt-1 bg-white">
-            {isHomePage ? (
+            {!isLoggedIn ? (
               <>
-                <DropdownMenuItem asChild className="cursor-pointer">
+                <DropdownMenuItem asChild className="cursor-pointer" onClick={handleLogin}>
                   <Link to="/login" className="flex items-center">
                     <span>Login</span>
                   </Link>
